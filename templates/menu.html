@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .menu-bar {
+            background-color: #007bff;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .menu-bar a {
+            background-color: white;
+            color: #007bff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            border: 2px solid #007bff;
+        }
+        .menu-bar a:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Notification Menu</h2>
+
+    <div class="menu-bar">
+        <a href="{% url 'send_approve_alerts' %}">Send Approval Message</a>
+        <a href="{% url 'alert_msg' %}">Send Customer Details</a>
+    </div>
+
+</body>
+</html>

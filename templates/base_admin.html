@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Panel{% endblock %}</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+        }
+
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #007bff;
+            color: white;
+            padding: 20px 10px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #0056b3;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .welcome {
+            font-size: 18px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <a href="{% url 'registered_customers' %}">View Registered Customers</a>
+        <a href="{% url 'manage_mechanic' %}">manage  Mechanics</a>
+        <a href="{% url 'manage_service' %}">Manage services</a>
+        <a href="{% url 'view_request' %}">View Complaints</a>
+        <a href="{% url 'assign_task' %}">Assign Tasks</a>
+        
+        <a href="{% url 'view_mechanic_details' %}">View mech details</a>
+        <a href="{% url 'admin_contact_messages' %}">View contact messages</a>
+        <a href="{% url 'notification_menu' %}">Send alert</a>
+        <a href="{% url 'view_task_details' %}">View Assigned Tasks</a>
+        
+        
+        
+        <a href="{% url 'adminlogout' %}">Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        {% block content %}
+        <!-- Content from child templates will go here -->
+        {% endblock %}
+    </div>
+</body>
+</html>

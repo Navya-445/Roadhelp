@@ -1,0 +1,248 @@
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f7f7f7;
+            font-weight: bold;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .logout {
+            display: block;
+            margin: 20px 0;
+            padding: 10px 15px;
+            background-color: #d9534f;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 5px;
+            width: 120px;
+        }
+
+        .logout:hover {
+            background-color: #c9302c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+
+    <!-- Customers Section -->
+    <h2>Registered Customers</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+            <tr>
+                <td>{{ customer.user.username }}</td>
+                <td>{{ customer.user.email }}</td>
+                <td>{{ customer.mobile }}</td>
+                <td>{{ customer.address }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Mechanics Section -->
+    <h2>Registered Mechanics</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Mobile</th>
+                <th>Skill</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mechanic in mechanics %}
+            <tr>
+                <td>{{ mechanic.user.username }}</td>
+                <td>{{ mechanic.mobile }}</td>
+                <td>{{ mechanic.skill }}</td>
+                <td>
+                    {% if mechanic.status %}
+                        Approved
+                    {% else %}
+                        Pending
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not mechanic.status %}
+                    <a href="{% url 'approve_mechanic' mechanic.id %}">Approve</a> |
+                    {% endif %}
+                    <a href="{% url 'reject_mechanic' mechanic.id %}">Reject</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'adminlogout' %}" class="logout">Logout</a>
+</body>
+</html> {% endcomment %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+        }
+
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #007bff;
+            color: white;
+            padding: 20px 10px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #0056b3;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .welcome {
+            font-size: 18px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <a href="{% url 'registered_customers' %}">View Registered Customers</a>
+        <a href="{% url 'manage_mechanic' %}">Manage Mechanics</a>
+        <a href="{% url 'manage_service' %}">Manage services</a>
+        <a href="{% url 'view_request' %}">View Complaints</a>
+        
+        <a href="{% url 'adminlogout' %}">Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Welcome, Admin</h1>
+        <p class="welcome">Use the menu on the left to navigate through the dashboard.</p>
+    </div>
+    <!-- Mechanics Section -->
+    {% comment %} <h2>Registered Mechanics</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Mobile</th>
+                <th>Skill</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mechanic in mechanics %}
+            <tr>
+                <td>{{ mechanic.user.username }}</td>
+                <td>{{ mechanic.mobile }}</td>
+                <td>{{ mechanic.skill }}</td>
+                <td>
+                    {% if mechanic.status %}
+                        Approved
+                    {% else %}
+                        Pending
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not mechanic.status %}
+                    <a href="{% url 'approve_mechanic' mechanic.id %}">Approve</a> |
+                    {% endif %}
+                    <a href="{% url 'reject_mechanic' mechanic.id %}">Reject</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table> {% endcomment %}
+
+    <a href="{% url 'adminlogout' %}" class="logout">Logout</a>
+</body>
+</html> 

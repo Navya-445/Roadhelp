@@ -1,0 +1,28 @@
+<h2>{{ service.name }}</h2>
+<img src="{{ service.picture.url }}" width="250" alt="Service Image">
+
+{% if service.additional_picture %}
+    <h3>Additional Picture</h3>
+    <img src="{{ service.additional_picture.url }}" width="250" alt="Additional Image">
+{% endif %}
+
+<p>{{ service.long_description }}</p>
+
+<h3>Points to Remember</h3>
+<p>{{ service.points_to_remember }}</p>
+
+<!-- Display success/error messages -->
+{% if messages %}
+    <div>
+        {% for message in messages %}
+            <p class="{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<h3>Request Service</h3>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit Request</button>
+</form>

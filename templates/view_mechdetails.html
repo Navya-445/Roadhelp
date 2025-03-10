@@ -1,0 +1,33 @@
+<h2>Mechanic Details</h2>
+
+<table border="1">
+    <tr>
+        <th>Profile Picture</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Contact</th>
+        <th>Experience</th>
+        <th>Specialization</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for mechanic in mechanics %}
+    <tr>
+        <td>
+            {% if mechanic.profile_picture %}
+                <img src="{{ mechanic.profile_picture.url }}" alt="Profile Picture" width="50px">
+            {% else %}
+                No Image
+            {% endif %}
+        </td>
+        <td>{{ mechanic.first_name }} {{ mechanic.last_name }}</td>
+        <td>{{ mechanic.email }}</td>
+        <td>{{ mechanic.contact_no }}</td>
+        <td>{{ mechanic.experience }} years</td>
+        <td>{{ mechanic.specialization.name }}</td>
+        <td>
+            <a href="{% url 'view_profile' %}?id={{ mechanic.id }}"><button>View Profile</button></a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approved Mechanics</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        .whatsapp-button {
+            background-color: #25D366;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Approved Mechanics</h2>
+    <table>
+        <tr>
+            <th>Mechanic Name</th>
+            <th>Mobile Number</th>
+            <th>Skill</th>
+            <th>WhatsApp Notification</th>
+        </tr>
+
+        {% for mechanic in approved_mechanics %}
+        <tr>
+            <td>{{ mechanic.user.username }}</td>
+            <td>{{ mechanic.mobile }}</td>
+            <td>{{ mechanic.skill }}</td>
+            <td>
+                <a href="https://wa.me/{{ mechanic.mobile }}?text=Hello {{ mechanic.user.username }}, your account has been approved! 🚀
+                You can now login with your credentials and start accepting service requests." 
+                   target="_blank" class="whatsapp-button">
+                    📲 Send WhatsApp Notification
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
+
+</body>
+</html>

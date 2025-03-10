@@ -1,0 +1,42 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+
+<!-- Definition Section: What We Do -->
+<section class="definition" style="text-align:center; padding:2rem; background-color:#f4f4f4;">
+   
+    <p style="font-size:1.2rem; color:#333;">OnRoadHelp is your trusted partner for vehicle breakdown assistance. We provide fast, reliable, and professional services to get you back on the road quickly. Whether it's towing, repair, or battery issues, our team of experts is available 24/7 to assist you in emergencies.</p>
+    <p style="font-size:1.2rem; color:#333;">Our goal is to offer peace of mind to drivers by providing timely solutions and exceptional customer service when you need it most. We're here to help, anytime, anywhere.</p>
+</section>
+
+<!-- Services Section -->
+<section class="services" style="display:flex; justify-content:space-around; padding:2rem; background-color:#f4f4f4;">
+    <div class="service-card" style="text-align:center; max-width:300px; margin:1rem;">
+        <img src="{% static 'images/car3.jpg' %}" alt="Towing Service" style="width:100%; height:auto;">
+        <h3>Towing Service</h3>
+        <p>We provide 24/7 towing service for any vehicle breakdowns.</p>
+    </div>
+    <div class="service-card" style="text-align:center; max-width:300px; margin:1rem;">
+        <img src="{% static 'images/car2.jpg' %}" alt="Repair Service" style="width:100%; height:auto;">
+        <h3>Repair Service</h3>
+        <p>Our expert mechanics are here to fix your vehicle on the spot.</p>
+    </div>
+    <div class="service-card" style="text-align:center; max-width:300px; margin:1rem;">
+        <img src="{% static 'images/batt.jpg' %}" alt="Battery Service" style="width:100%; height:auto;">
+        <h3>Battery Service</h3>
+        <p>If your battery dies, we can help you jump-start or replace it.</p>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="cta" style="text-align:center; padding:2rem; background-color:#007bff; color:white;">
+    <h2>Need Assistance?</h2>
+    <p>Contact us today to get immediate help for your vehicle breakdown.</p>
+    <a href="/contact-us" class="btn" style="background-color:#ffffff; color:#ff9800; padding:10px 20px; text-decoration:none; border-radius:5px; font-weight:bold;">Contact Us</a>
+</section>
+
+{% endblock %}

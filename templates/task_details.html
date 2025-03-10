@@ -1,0 +1,31 @@
+{% extends 'base_admin.html' %}
+{% block content %}
+
+<h2>Task Details</h2>
+<p><strong>Task ID:</strong> {{ task.id }}</p>
+<p><strong>Assigned To:</strong> {{ task.mechanic.user.username }}</p>
+<p><strong>Service Request:</strong> {{ task.service_request }}</p>
+<p><strong>Current Status:</strong> {{ task.status }}</p>
+<p><strong>Assigned Date:</strong> {{ task.assigned_date }}</p>
+
+<hr>
+
+<h3>Update Task Status</h3>
+<form method="POST">
+    {% csrf_token %}
+    <label for="status">Update Status:</label>
+    <select name="status" id="status">
+        {% for value, label in task.status_choices %}
+            <option value="{{ value }}" {% if task.status == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Save</button>
+</form>
+
+{% if messages %}
+    {% for message in messages %}
+        <p style="color: green;">{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}

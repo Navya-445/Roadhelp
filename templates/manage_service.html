@@ -1,0 +1,30 @@
+<h3>Add New Service</h3>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Service</button>
+</form>
+
+<!-- Display success/error messages -->
+{% if messages %}
+    <div>
+        {% for message in messages %}
+            <p class="{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<h3>Existing Services</h3>
+{% for service in services %}
+    <div>
+        <h4>{{ service.name }}</h4>
+        <img src="{{ service.picture.url }}" width="100" alt="Service Image">
+        <form method="post" onsubmit="return confirm('Are you sure you want to delete this service?');">
+            {% csrf_token %}
+            <input type="hidden" name="service_id" value="{{ service.id }}">
+            <button type="submit" name="delete">Delete</button>
+        </form>
+    </div>
+{% empty %}
+    <p>No services available.</p>
+{% endfor %}

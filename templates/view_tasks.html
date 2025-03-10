@@ -1,0 +1,28 @@
+{% extends 'base_admin.html' %}
+{% block content %}
+
+<h2>Assigned Tasks</h2>
+
+<!-- Success and Error Messages -->
+{% if messages %}
+    {% for message in messages %}
+        <p style="color: {% if message.tags == 'success' %}green{% else %}red{% endif %};">
+            {{ message }}
+        </p>
+    {% endfor %}
+{% endif %}
+
+{% for task in tasks %}
+<div style="border: 1px solid #ccc; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+    <h3>Service: {{ task.service_request.service.name }}</h3>
+    <p><strong>Customer:</strong> {{ task.user.username }}</p>
+    <p><strong>Mechanic:</strong> {{ task.mechanic.first_name }} {{ task.mechanic.last_name }}</p>
+    <p><strong>Status:</strong> <span style="color: {% if task.status == 'Completed' %}green{% elif task.status == 'In Progress' %}orange{% else %}red{% endif %};">
+        {{ task.status }}</span>
+    </p>
+
+    <a href="{% url 'edit_task_status' task.id %}"><button>Edit Status</button></a>
+</div>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% comment %} {% extends "mechanic_templates/base.html" %}
+{% block content %} {% endcomment %}
+<h2>My Appointments</h2>
+<table>
+    <tr>
+        <th>Service</th>
+        <th>Customer</th>
+        <th>Location</th>
+        <th>Status</th>
+    </tr>
+    {% for task in assigned_tasks %}
+    <tr>
+        <td>{{ task.service_request.service.name }}</td>
+        <td>{{ task.user.username }}</td>
+        <td>{{ task.service_request.location }}</td>
+        <td>{{ task.status }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% comment %} {% endblock %} {% endcomment %}

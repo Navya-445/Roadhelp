@@ -1,0 +1,143 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Manage mechanics{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Mechanics</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px auto;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .actions a {
+            text-decoration: none;
+            font-size: 14px;
+            margin-right: 10px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: 0.3s ease;
+        }
+
+        .approve {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .approve:hover {
+            background-color: #218838;
+        }
+
+        .reject {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .reject:hover {
+            background-color: #c82333;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .back-link:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Manage Mechanics</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Username</th>
+                <th>Mobile</th>
+                <th>Skill</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mechanic in mechanics %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ mechanic.user.username }}</td>
+                <td>{{ mechanic.mobile }}</td>
+                <td>{{ mechanic.skill }}</td>
+                <td>
+                    {% if mechanic.status %}
+                        Approved
+                    {% else %}
+                        Pending
+                    {% endif %}
+                </td>
+                <td class="actions">
+                    {% if not mechanic.status %}
+                    <a href="{% url 'approve_mechanic' mechanic.id %}" class="approve">Approve</a>
+                    {% endif %}
+                    <a href="{% url 'reject_mechanic' mechanic.id %}" class="reject">Reject</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; color: #666;">No mechanics available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'admin_dashboard' %}" class="back-link">Back to Dashboard</a>
+</body>
+</html>
+{% endblock %}

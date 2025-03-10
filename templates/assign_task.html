@@ -1,0 +1,83 @@
+
+
+{% comment %} <a href="{% url 'view_task_details' task.id %}">📋 View Details</a> {% endcomment %}
+{% comment %} <a href="{% url 'edit_task_status' task.id %}">✏ Edit Status</a> {% endcomment %}
+
+<!-- Success and Error Messages -->
+<!-- Success and Error Messages -->
+{% if messages %}
+    {% for message in messages %}
+        <p style="color: {% if message.tags == 'success' %}green{% else %}red{% endif %};">
+            {{ message }}
+        </p>
+    {% endfor %}
+{% endif %}
+
+<h2>Unassigned Service Requests</h2>
+{% for request in service_requests %}
+<div style="border: 1px solid #ccc; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+    <h3>Service Request: {{ request.service.name }}</h3>
+    <p><strong>Customer:</strong> {{ request.user.username }}</p>
+    <p><strong>Location:</strong> {{ request.location }}</p>
+    <p><strong>City:</strong> {{ request.city }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="service_request_id" value="{{ request.id }}">
+
+        <label>Select District:</label>
+        <select name="district" class="district-dropdown" data-request-id="{{ request.id }}">
+            <option value="">Select District</option>
+            {% for district in districts %}
+            <option value="{{ district }}">{{ district }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Select Mechanic:</label>
+        <select name="mechanic" class="mechanic-dropdown" id="mechanic_{{ request.id }}">
+            <option value="">Select Mechanic</option>
+        </select>
+
+        <button type="submit">Assign Task</button>
+    </form>
+</div>
+{% empty %}
+<p>No unassigned service requests available.</p>
+{% endfor %}
+
+<h2>Assigned Tasks</h2>
+{% for task in assigned_tasks %}
+<div style="border: 1px solid #ccc; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+    <h3>Assigned Task: {{ task.service_request.service.name }}</h3>
+    <p><strong>Customer:</strong> {{ task.user.username }}</p>
+    <p><strong>Mechanic:</strong> {{ task.mechanic.first_name }} {{ task.mechanic.last_name }}</p>
+    <p><strong>Status:</strong> {{ task.get_status_display }}</p>
+</div>
+{% empty %}
+<p>No assigned tasks yet.</p>
+{% endfor %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll('.district-dropdown').forEach(dropdown => {
+        dropdown.addEventListener("change", function() {
+            let requestId = this.getAttribute("data-request-id");
+            let selectedDistrict = this.value;
+            let mechanicDropdown = document.getElementById("mechanic_" + requestId);
+
+            if (selectedDistrict) {
+                fetch(`/get-mechanics/?district=${selectedDistrict}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        mechanicDropdown.innerHTML = '<option value="">Select Mechanic</option>';
+                        data.forEach(mechanic => {
+                            mechanicDropdown.innerHTML += `<option value="${mechanic.id}">${mechanic.first_name} ${mechanic.last_name} - ${mechanic.specialization__name}</option>`;
+                        });
+                    });
+            } else {
+                mechanicDropdown.innerHTML = '<option value="">Select Mechanic</option>';
+            }
+        });
+    });
+});
+</script>

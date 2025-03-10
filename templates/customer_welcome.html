@@ -1,0 +1,127 @@
+{% comment %} <h2>Welcome, {{ request.user.customer.user.username }}</h2>
+<p>Your mobile number: {{ request.user.customer.mobile }}</p>
+<p>Your address: {{ request.user.customer.address }}</p>
+ <a href="{% url 'customerlogout' %}">Logout</a> {% endcomment %}
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Customer Dashboard</title>
+     <style>
+         body {
+             margin: 0;
+             font-family: Arial, sans-serif;
+             background-color: #f9f9f9;
+         }
+ 
+         /* Sidebar styling */
+         .sidebar {
+             width: 220px;
+             height: 100vh;
+             background-color: #007bff;
+             color: #ffffff;
+             position: fixed;
+             top: 0;
+             left: 0;
+             padding: 20px 15px;
+             box-sizing: border-box;
+         }
+ 
+         .sidebar h2 {
+             text-align: center;
+             margin-bottom: 30px;
+             font-size: 22px;
+         }
+ 
+         .sidebar a {
+             display: block;
+             color: white;
+             text-decoration: none;
+             padding: 12px 8px;
+             margin-bottom: 12px;
+             border-radius: 6px;
+             font-size: 15px;
+             transition: background 0.3s ease;
+         }
+ 
+         .sidebar a:hover {
+             background-color: #0056b3;
+         }
+ 
+         /* Main content styling */
+         .main-content {
+             margin-left: 220px; /* Matches sidebar width */
+             padding: 30px;
+         }
+ 
+         .header {
+             background: linear-gradient(90deg, #007bff, #0056b3);
+             color: white;
+             padding: 20px 0;
+             text-align: center;
+             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+             margin-bottom: 20px;
+         }
+ 
+         .header h2 {
+             margin: 0;
+             font-size: 28px;
+             font-weight: bold;
+         }
+ 
+         .card {
+             background-color: #ffffff;
+             border-radius: 10px;
+             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+             padding: 20px;
+             margin-bottom: 20px;
+         }
+ 
+         .card h3 {
+             color: #007bff;
+             margin-top: 0;
+         }
+ 
+         .logout-btn {
+             display: inline-block;
+             margin-top: 20px;
+             padding: 10px 20px;
+             background-color: #007bff;
+             color: white;
+             text-decoration: none;
+             border-radius: 5px;
+             font-weight: bold;
+         }
+ 
+         .logout-btn:hover {
+             background-color: #0056b3;
+         }
+     </style>
+ </head>
+ <body>
+     <!-- Sidebar -->
+     <div class="sidebar">
+         <h2>Customer Dashboard</h2>
+         <a href="#">Profile</a>
+         <a href="#">Orders</a>
+         <a href="#">Support</a>
+         <a href="#">Settings</a>
+         <a href="{% url 'customerlogout' %}" class="logout-btn">Logout</a>
+     </div>
+ 
+     <!-- Main Content -->
+     <div class="main-content">
+         <div class="header">
+             <h2>Welcome, {{ request.user.customer.user.username }}</h2>
+         </div>
+         
+         <div class="card">
+             <h3>Profile Information</h3>
+             <p><strong>Mobile Number:</strong> {{ request.user.customer.mobile }}</p>
+             <p><strong>Address:</strong> {{ request.user.customer.address }}</p>
+         </div>
+     </div>
+ </body>
+ </html>
+ 

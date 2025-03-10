@@ -1,0 +1,50 @@
+
+
+{% extends "base_admin.html" %}  <!-- Extend your base template if you have one -->
+
+{% block content %}
+<h2>Assigned Task Details - Send Notification</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Mechanic Name</th>
+            <th>Mobile Number</th>
+            <th>Email</th>
+            <th>Service Request</th>
+            <th>Location</th>
+            <th>Customer Name</th>
+            <th>Customer Contact</th>
+            <th>Vehicle Registration</th>
+            <th>WhatsApp Alert</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in assigned_tasks %}
+        <tr>
+            <td>{{ task.mechanic.user.username }}</td>
+            <td>{{ task.mechanic.contact_no  }}</td>
+            <td>{{ task.mechanic.email }}</td>
+            <td>{{ task.service_request.service.name }}</td>
+            <td>{{ task.service_request.location }}</td>
+            <td>{{ task.user.username }}</td>
+            <td>{{ task.service_request.contact_number }}</td>
+            <td>{{ task.service_request.vehicle_reg_number }}</td>
+            <td>
+                <a href="https://wa.me/{{ task.mechanic.contact_no }}?text=Hello {{ task.mechanic.user.username }}, you have been assigned a service request. 
+                Customer Name: {{ task.user.username }},
+                Service: {{ task.service_request.service.name }},
+                Location: {{ task.service_request.location }},
+                Contact: {{ task.service_request.contact_number }},
+                Vehicle Reg. No: {{ task.service_request.vehicle_reg_number }}" 
+                target="_blank">
+                    🚀 Send WhatsApp Alert
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+

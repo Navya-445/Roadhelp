@@ -1,0 +1,20 @@
+<h2>Profile Details</h2>
+
+{% if messages %}
+  {% for message in messages %}
+    <p style="color: green;">{{ message }}</p>
+  {% endfor %}
+{% endif %}
+
+<img src="{{ profile.profile_picture.url }}" alt="Profile Picture" width="150px"><br>
+<p><strong>Name:</strong> {{ profile.first_name }} {{ profile.last_name }}</p>
+<p><strong>Email:</strong> {{ profile.email }}</p>
+<p><strong>Mobile:</strong> {{ profile.contact_no }}</p>
+<p><strong>Aadhar ID:</strong> {{ profile.aadhar_id }}</p>
+<p><strong>Date of Birth:</strong> {{ profile.date_of_birth }}</p>
+<p><strong>Gender:</strong> {{ profile.get_gender_display }}</p>
+<p><strong>Experience:</strong> {{ profile.experience }} years</p>
+<p><strong>Specialization:</strong> {{ profile.specialization.name }}</p>
+<p><strong>Address:</strong> {{ profile.address }}, {{ profile.city }}, {{ profile.state }}, {{ profile.district }}</p>
+
+<a href="{% url 'edit_profile' %}"><button>Edit Profile</button></a>

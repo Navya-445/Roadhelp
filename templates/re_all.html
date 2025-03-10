@@ -1,0 +1,41 @@
+
+{% extends 'base1.html' %}
+{% load static %}
+{% block title %}
+Register
+{% endblock %}
+
+{% block content %}
+<h1>Welcome to the Register Page</h1>
+
+<div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
+
+    <!-- Admin Login Button -->
+    <a href="{% url 'adminlogin' %}" style="text-decoration: none; text-align: center;">
+        <button style="background-color: #007bff; color: white; border: none; padding: 15px 20px; border-radius: 5px; display: flex; align-items: center; gap: 10px; cursor: pointer;">
+            <img src="{% static 'images/adminicon.png' %}" alt="Admin Icon" style="width: 24px; height: 24px;">
+            Admin Login
+        </button>
+    </a>
+
+    <!-- Customer Sign In/Registration Button -->
+    <!-- Customer Sign In/Registration Button -->
+<a href="{% url 'customer_login' %}" style="text-decoration: none; text-align: center;">
+    <button style="background-color: #28a745; color: white; border: none; padding: 15px 20px; border-radius: 5px; display: flex; align-items: center; gap: 10px; cursor: pointer;">
+        <img src="{% static 'images/usericon.png' %}" alt="Customer Icon" style="width: 24px; height: 24px;">
+        Customer Signup/Login
+    </button>
+</a>
+
+
+
+    <!-- Mechanic Sign In/Registration Button -->
+    <a href="{% url 'mechanic_signup' %}" style="text-decoration: none; text-align: center;">
+        <button style="background-color: #ffc107; color: black; border: none; padding: 15px 20px; border-radius: 5px; display: flex; align-items: center; gap: 10px; cursor: pointer;">
+            <img src="{% static 'images/mechicon.png' %}" alt="Mechanic Icon" style="width: 24px; height: 24px;">
+            Mechanic Signup/Login
+        </button>
+    </a>
+    
+</div>
+{% endblock %}

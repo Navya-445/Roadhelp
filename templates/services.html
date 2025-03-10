@@ -1,0 +1,100 @@
+{% extends "base1.html" %}
+{% load static %}
+{% block title %}
+Services - Car Serv
+{% endblock %}
+
+{% block content %}
+<section class="services-section">
+    <div class="container">
+        <h2 class="text-center mb-5">Our Services</h2>
+        <div class="row">
+            <!-- Service 1: Quick Roadside Assistance -->
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm mb-4">
+                    <img src="{% static 'images/roadassist.jpg' %}" class="card-img-top" alt="Quick Roadside Assistance">
+                    <div class="card-body">
+                        <h5 class="card-title">Quick Roadside Assistance</h5>
+                        <p class="card-text">Stranded on the road? Our quick roadside assistance will help you get back on track in no time.</p>
+                        <a href="#" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service 2: Service on Wheel -->
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm mb-4">
+                    <img src="{% static 'images/s3.png' %}" class="card-img-top" alt="Service on Wheel">
+                    <div class="card-body">
+                        <h5 class="card-title">Service on Wheel</h5>
+                        <p class="card-text">Enjoy professional vehicle servicing at your location. Convenience and quality guaranteed.</p>
+                        <a href="#" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+
+            
+
+            <!-- Service 4: Periodic Maintenance -->
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm mb-4">
+                    <img src="{% static 'images/p.jpg' %}" class="card-img-top" alt="Periodic Maintenance">
+                    <div class="card-body">
+                        <h5 class="card-title">Periodic Maintenance</h5>
+                        <p class="card-text">Keep your vehicle running smoothly with our expert maintenance services tailored for your car.</p>
+                        <a href="#" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service 5: Battery Assistance -->
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm mb-4">
+                    <img src="{% static 'images/batt.jpg' %}" class="card-img-top" alt="Battery Assistance">
+                    <div class="card-body">
+                        <h5 class="card-title">Battery Assistance</h5>
+                        <p class="card-text">Dead battery? We’ll provide quick replacement or recharging to get you going again.</p>
+                        <a href="#" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service 6: Car Cleaning -->
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm mb-4">
+                    <img src="{% static 'images/contact-img.png' %}" class="card-img-top" alt="Car Cleaning">
+                    <div class="card-body">
+                        <h5 class="card-title">Car Cleaning</h5>
+                        <p class="card-text">Enjoy a spotless car with our professional cleaning services. Both interior and exterior cleaning available.</p>
+                        <a href="#" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="services" style="display:flex; justify-content:space-around; padding:2rem; background-color:#f4f4f4;">
+    <div class="service-card" style="text-align:center; max-width:300px; margin:1rem;">
+        <img src="{% static 'images/car3.jpg' %}" alt="Towing Service" style="width:100%; height:auto;">
+        <h3>Towing Service</h3>
+        <p>We provide 24/7 towing service for any vehicle breakdowns.</p>
+    </div>
+    <div class="service-card" style="text-align:center; max-width:300px; margin:1rem;">
+        <img src="{% static 'images/car2.jpg' %}" alt="Repair Service" style="width:100%; height:auto;">
+        <h3>Repair Service</h3>
+        <p>Our expert mechanics are here to fix your vehicle on the spot.</p>
+    </div>
+    <div class="service-card" style="text-align:center; max-width:300px; margin:1rem;">
+        <img src="{% static 'images/batt.jpg' %}" alt="Battery Service" style="width:100%; height:auto;">
+        <h3>Battery Service</h3>
+        <p>If your battery dies, we can help you jump-start or replace it.</p>
+    </div>
+</section>
+
+<section class="cta" style="text-align:center; padding:2rem; background-color:#007bff; color:white;">
+    <h2>Need Assistance?</h2>
+    <p>Contact us today to get immediate help for your vehicle breakdown.</p>
+    <a href="/contact-us" class="btn" style= "background-color:#ffffff; color:#ff9800; padding:10px 20px; text-decoration:none; border-radius:5px; font-weight:bold;">Contact Us</a>
+</section>
+
+{% endblock %}

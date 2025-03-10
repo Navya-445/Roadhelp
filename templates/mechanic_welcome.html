@@ -1,0 +1,155 @@
+{% comment %} <h2>Welcome, {{ request.user.mechanic.user.username }}</h2>
+<p>Your skills: {{ request.user.mechanic.skill }}</p>
+<p>Your mobile number: {{ request.user.mechanic.mobile }}</p>
+<p>Your status: {% if request.user.mechanic.status %}Approved{% else %}Pending Approval{% endif %}</p>
+<a href="{% url 'mechaniclogout' %}">Logout</a> {% endcomment %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanic Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            width: 200px; /* Reduced the width for better main content visibility */
+            height: 100vh;
+            background-color: #007bff;
+            color: #ffffff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 15px 10px;
+            box-sizing: border-box;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px 5px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            background-color: #0056b3;
+        }
+
+        /* Main content styling */
+        .main-content {
+            margin-left: 200px; /* Matches sidebar width */
+            padding: 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+
+        .status {
+            font-size: 16px;
+            font-weight: bold;
+            color: green;
+        }
+
+        .status.pending {
+            color: red;
+        }
+
+        /* Header styling */
+        .header {
+            background: linear-gradient(90deg, #007bff, #0056b3);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            left: 200px; /* Matches sidebar width */
+            width: calc(100% - 200px); /* Adjusted header width */
+            z-index: 1000;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* Logout button */
+        .logout-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .logout-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Mechanic Dashboard</h2>
+        <a href="{% url 'complete_profile' %}">Profile</a>
+        <a href="{% url 'my_appointments' %}">My Appointments</a>
+        <a href="#">Reports</a>
+        <a href="{% url 'mechaniclogout' %}" class="logout-btn">Logout</a>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>Welcome, {{ request.user.mechanic.user.username }}</h1>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="card">
+            <h3>Profile Information</h3>
+            <p><strong>Skills:</strong> {{ request.user.mechanic.skill }}</p>
+            <p><strong>Mobile Number:</strong> {{ request.user.mechanic.mobile }}</p>
+            <p>
+                <strong>Status:</strong> 
+                <span class="status {% if not request.user.mechanic.status %}pending{% endif %}">
+                    {% if request.user.mechanic.status %}Approved{% else %}Pending Approval{% endif %}
+                </span>
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Today's Appointments</h3>
+            <p>No appointments for today. Check back later!</p>
+        </div>
+    </div>
+</body>
+</html>

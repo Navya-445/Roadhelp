@@ -1,0 +1,25 @@
+{% comment %} {% extends "customer_templates/base.html" %}
+{% block content %} {% endcomment %}
+<h2>My Requests</h2>
+<table>
+    <tr>
+        <th>Service</th>
+        <th>Assigned Mechanic</th>
+        <th>Contact</th>
+        <th>Status</th>
+    </tr>
+    {% for task in customer_tasks %}
+    <tr>
+        <td>{{ task.service_request.service.name }}</td>
+        <td>{{ task.mechanic.first_name }} {{ task.mechanic.last_name }}</td>
+        <td>{{ task.mechanic.contact_no }}</td>
+        <td>{{ task.status }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{ <a href="https://wa.me/{{ mechanic.Mob_num }}?text=Hello, I would like to chat about your counseling." target="_blank">
+    Contact Mechanic on WhatsApp
+</a> 
+ 
+
+
