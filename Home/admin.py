@@ -4,7 +4,7 @@ from django.contrib import admin
 
 
 from .models import Customer, Mechanic
-from .models import Customer, Mechanic, MechanicProfile, ServiceProvided, ServiceRequest, TaskAssignment,SparePart, MechanicTaskUpdate
+from .models import Customer, Mechanic, MechanicProfile, ServiceProvided, ServiceRequest, TaskAssignment,SparePart, MechanicTaskUpdate, StatusUpdate
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
@@ -63,5 +63,8 @@ class SparePartAdmin(admin.ModelAdmin):
 class MechanicTaskUpdateAdmin(admin.ModelAdmin):
     list_display = ('task', 'status', 'location_reached_time', 'service_completed_time')
     list_filter = ('status',)
+@admin.register(StatusUpdate)
+class StatusUpdateAdmin(admin.ModelAdmin):
+    list_display = ['task', 'mechanic', 'service_request', 'status', 'updated_at']
 
 

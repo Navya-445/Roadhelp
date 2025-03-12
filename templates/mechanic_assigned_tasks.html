@@ -1,33 +1,27 @@
-{% comment %} 
-<h2>My Appointments</h2>
+<h2>Assigned Tasks</h2>
 
-<table border="1">
+<!-- Success Message Display -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+<table>
     <tr>
+        <th>Task ID</th>
         <th>Service</th>
-        <th>Customer</th>
-        <th>Location</th>
         <th>Status</th>
-        <th>Action</th>
+        <th>Update Status</th>
     </tr>
     {% for task in assigned_tasks %}
     <tr>
-        <td>{{ task.service_request.service.name }}</td>
-        <td>{{ task.user.username }}</td>
-        <td>{{ task.service_request.location }}</td>
-         <td>
-            <span class="badge bg-warning">{{ task.status }}</span>
-        </td> 
-        
-        {% comment %} <td>
-            <a href="{% url 'update_mechanic_task_status' task.id %}" class="btn btn-primary">Edit Status</a>
-        </td> {% endcomment %}
-        <td><a href="{% url 'update_mechanic_task_status' task.id %}">Edit Status</a></td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="5">No assigned appointments found.</td>
+        <td>{{ task.id }}</td>
+        <td>{{ task.service_request.service.name }}</td>  <!-- ✅ Ensure correct service field -->
+        <td>{{ task.latest_status }}</td>  <!-- ✅ Display latest status update -->
+        <td><a href="{% url 'update_mechanic_task_status' task.id %}">Update</a></td>
     </tr>
     {% endfor %}
-</table>
 
- {% endcomment %}
+</table>
+<a href ="{% url 'mechanic_welcome' %}">Back dashboard</a>

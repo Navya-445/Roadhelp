@@ -170,5 +170,11 @@ class SparePartForm(forms.ModelForm):
     class Meta:
         model = SparePart
         fields = ['name', 'stock_quantity']
+from .models import StatusUpdate
+
+class StatusUpdateForm(forms.ModelForm):
+    class Meta:
+        model = StatusUpdate
+        fields = ['status', 'remarks']
 
 

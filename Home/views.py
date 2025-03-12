@@ -478,6 +478,47 @@ def task_details(request, task_id):
 from .models import  TaskAssignment
 from .models import MechanicTaskUpdate
 from .forms import WorkDetailsForm,TaskStatusUpdateForm
+from .models import StatusUpdate, TaskAssignment
+from .forms import StatusUpdateForm
+
+@login_required
+def mechanic_assigned_tasks(request):
+    """Mechanic views their assigned tasks with latest status updates"""
+    
+    assigned_tasks = TaskAssignment.objects.filter(mechanic=request.user.mechanicprofile)
+
+    # Fetch latest status update for each task
+    for task in assigned_tasks:
+        latest_status_update = StatusUpdate.objects.filter(task=task).order_by('-updated_at').first()
+        task.latest_status = latest_status_update.status if latest_status_update else "Pending"  # Default to Pending
+
+    return render(request, 'mechanic_assigned_tasks.html', {'assigned_tasks': assigned_tasks})
+
+@login_required
+def update_mechanic_task_status(request, task_id):
+    """Mechanic updates task status"""
+    
+    task = get_object_or_404(TaskAssignment, id=task_id)
+    service_request = task.service_request  # Ensure this field exists in TaskAssignment model
+
+    # Fetch or create a status update entry
+    task_update, created = StatusUpdate.objects.get_or_create(
+        task=task, 
+        mechanic=request.user.mechanicprofile,
+        service_request=service_request  
+    )
+
+    if request.method == 'POST':
+        form = StatusUpdateForm(request.POST, instance=task_update)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "✅ Task status updated successfully!")
+            return redirect('mechanic_assigned_tasks')  # Redirect to assigned tasks
+    else:
+        form = StatusUpdateForm(instance=task_update)
+
+    return render(request, 'update_task_status.html', {'form': form, 'task_update': task_update})
+
 # def add_status(request):
 #     return render(request,"update_task_status.html")
 # @login_required

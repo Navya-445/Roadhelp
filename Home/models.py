@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password
+from django.utils import timezone
 
 # Create your models here.
 from django.contrib.auth.models import User
@@ -161,3 +162,22 @@ class MechanicTaskUpdate(models.Model):
 
     def __str__(self):
         return f"Update for Task {self.task.id} - {self.status}"
+
+class StatusUpdate(models.Model):
+    """Mechanic's status updates for assigned tasks."""
+    task = models.ForeignKey(TaskAssignment, on_delete=models.CASCADE, related_name='status_updates')
+    mechanic = models.ForeignKey(MechanicProfile, on_delete=models.CASCADE)
+    service_request = models.ForeignKey(ServiceRequest, on_delete=models.CASCADE)  # ✅ Unchanged, as per your requirement
+
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('In Progress', 'In Progress'),
+        ('Completed', 'Completed')
+    ]
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    remarks = models.TextField(blank=True, null=True)
+    updated_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Mechanic {self.mechanic.first_name} - Task {self.task.id} - Status: {self.status}"

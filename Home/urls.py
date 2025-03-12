@@ -46,10 +46,12 @@ urlpatterns = [
      path('view-tasks/', views.view_task_details, name='view_task_details'),  # ✅ View all assigned tasks
     path('edit-task-status/<int:task_id>/', views.edit_task_status, name='edit_task_status'),
     path('get-mechanics/', views.get_mechanics_by_district, name='get_mechanics_by_district'),
+    path('mechanic/tasks/', views.mechanic_assigned_tasks, name='mechanic_assigned_tasks'),
+    path('mechanic/task/<int:task_id>/update/', views.update_mechanic_task_status, name='update_mechanic_task_status'),]
     # path('task-status', views.add_status, name='update_task_status'),
     # path('mechanic/appointments/', views.assigned_tasks, name='mechanic_assigned_tasks'),
     # path('mechanic/update-task/<int:task_id>/', views.update_mechanic_task_status, name='update_mechanic_task_status'),
-]
+
      
 
     # path('task/<int:task_id>/add_status/', views.add_status, name='add_status'),
