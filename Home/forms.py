@@ -1,27 +1,44 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
-
+from django.core.validators import RegexValidator
 # forms.py
 
 
 # Customer Signup Form
 from .models import Customer, Mechanic
-
 class CustomerSignupForm(forms.ModelForm):
-    username = forms.CharField(max_length=150)
+    username = forms.CharField(
+        max_length=150,
+        validators=[
+            RegexValidator(
+                regex=r'^[A-Za-z][A-Za-z0-9]*$',  
+                message="Username must start with a letter and contain only letters and numbers."
+            )
+        ]
+    )
     email = forms.EmailField()
-    password = forms.CharField(widget=forms.PasswordInput)
+    password = forms.CharField(
+        widget=forms.PasswordInput,
+        validators=[
+            RegexValidator(
+                regex=r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
+                message="Password must be at least 8 characters long and include an uppercase letter, lowercase letter, number, and special character."
+            )
+        ]
+    )
+    mobile = forms.CharField(
+        validators=[
+            RegexValidator(
+                regex=r'^\+\d{1,4}\d{10}$',
+                message="Enter a valid mobile number with country code (e.g., +911234567890)."
+            )
+        ]
+    )
+    address = forms.CharField(widget=forms.Textarea, required=True)
 
     class Meta:
         model = Customer
         fields = ['username', 'email', 'password', 'mobile', 'address']
-
-    def save(self, commit=True):
-        customer = super().save(commit=False)
-        if commit:
-            customer.save()
-        return customer
-
 
 class MechanicSignupForm(forms.ModelForm):
     username = forms.CharField(max_length=150)
@@ -119,4 +136,39 @@ class ContactForm(forms.ModelForm):
     class Meta:
         model = ContactMessage
         fields = ['name', 'email', 'phone', 'message']
+
+from django import forms
+from .models import MechanicTaskUpdate, SparePart
+
+class TaskStatusUpdateForm(forms.ModelForm):
+    """Form to update only the task status"""
+    class Meta:
+        model = MechanicTaskUpdate
+        fields = ['status']
+        widgets = {
+            'status': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+class WorkDetailsForm(forms.ModelForm):
+    """Form to update work details, including times, notes, and images"""
+    class Meta:
+        model = MechanicTaskUpdate
+        fields = [
+            'location_reached_time', 'service_completed_time',
+            'before_service_picture', 'after_service_picture',
+            'mechanic_notes', 'spare_parts_used'
+        ]
+        widgets = {
+            'location_reached_time': forms.Select(attrs={'class': 'form-control'}),
+            'service_completed_time': forms.Select(attrs={'class': 'form-control'}),
+            'mechanic_notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'spare_parts_used': forms.SelectMultiple(attrs={'class': 'form-control'}),
+        }
+
+class SparePartForm(forms.ModelForm):
+    """Form for spare parts selection while updating work details"""
+    class Meta:
+        model = SparePart
+        fields = ['name', 'stock_quantity']
+
 

@@ -4,7 +4,7 @@ from django.contrib import admin
 
 
 from .models import Customer, Mechanic
-from .models import Customer, Mechanic, MechanicProfile, ServiceProvided, ServiceRequest, TaskAssignment
+from .models import Customer, Mechanic, MechanicProfile, ServiceProvided, ServiceRequest, TaskAssignment,SparePart, MechanicTaskUpdate
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
@@ -55,5 +55,13 @@ from .models import MechanicNum
 class MechanicNumAdmin(admin.ModelAdmin):
     list_display = ('id', 'Mob_num')  # Display fields in the admin panel
     search_fields = ('Mob_num',)  # Add search functionality
+@admin.register(SparePart)
+class SparePartAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description', 'price', 'stock_quantity')
+
+@admin.register(MechanicTaskUpdate)
+class MechanicTaskUpdateAdmin(admin.ModelAdmin):
+    list_display = ('task', 'status', 'location_reached_time', 'service_completed_time')
+    list_filter = ('status',)
 
 

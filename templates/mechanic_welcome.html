@@ -123,6 +123,16 @@
         <h2>Mechanic Dashboard</h2>
         <a href="{% url 'complete_profile' %}">Profile</a>
         <a href="{% url 'my_appointments' %}">My Appointments</a>
+        {% comment %} <a href="{% url 'mechanic_assigned_tasks' %}">My task</a> {% endcomment %}
+        {% comment %} <a href="{% url 'update_task_status'  %}">add status</a> {% endcomment %}
+
+        {% comment %} <a href="{% url 'add_task_status' %}">add status</a>
+         {% endcomment %}
+        {% comment %} <a href="{% url 'add_status' %}">add status</a> {% endcomment %}
+        
+        {% comment %} <a href="{% url 'work_details_filling' %}">add work details</a>
+        
+        <a href="{% url 'work_history' %}">Mywork history</a> {% endcomment %}
         <a href="#">Reports</a>
         <a href="{% url 'mechaniclogout' %}" class="logout-btn">Logout</a>
     </div>

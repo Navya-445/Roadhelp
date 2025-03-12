@@ -123,3 +123,41 @@ class MechanicNum(models.Model):
     def __str__(self):
         return self.Mob_num
 
+class SparePart(models.Model):
+    """Model for spare parts with stock quantity"""
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    stock_quantity = models.PositiveIntegerField(default=0)  # Track stock quantity
+
+    def __str__(self):
+        return self.name
+
+class MechanicTaskUpdate(models.Model):
+    """Model for mechanics to update task status & work details"""
+    task = models.ForeignKey(TaskAssignment, on_delete=models.CASCADE, related_name='task_updates')
+    assigned_date = models.DateTimeField()  # Fetch from TaskAssignment
+
+    status = models.CharField(
+        max_length=20, 
+        choices=[
+            ('Pending', 'Pending'), 
+            ('In Progress', 'In Progress'), 
+            ('Completed', 'Completed')
+        ],
+        default='Pending'
+    )
+
+    TIME_CHOICES = [(f"{h}:00 {ampm}", f"{h}:00 {ampm}") for h in range(1, 13) for ampm in ["AM", "PM"]]
+
+    location_reached_time = models.CharField(max_length=10, choices=TIME_CHOICES, null=True, blank=True)
+    service_completed_time = models.CharField(max_length=10, choices=TIME_CHOICES, null=True, blank=True)
+
+    before_service_picture = models.ImageField(upload_to='service_pics/', null=True, blank=True)
+    after_service_picture = models.ImageField(upload_to='service_pics/', null=True, blank=True)
+    
+    spare_parts_used = models.ManyToManyField(SparePart, blank=True)  # Dropdown for spare parts
+    mechanic_notes = models.TextField(blank=True, null=True)  # Work details
+
+    def __str__(self):
+        return f"Update for Task {self.task.id} - {self.status}"

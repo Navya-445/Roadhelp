@@ -1,0 +1,30 @@
+{% comment %} 
+<h2>Edit Task Status</h2>
+
+<!-- Success and Error Messages -->
+{% if messages %}
+    {% for message in messages %}
+        <p style="color: {% if message.tags == 'success' %}green{% else %}red{% endif %};">
+            {{ message }}
+        </p>
+    {% endfor %}
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+
+    <label><strong>Service:</strong> {{ task_update.service_request.service.name }}</label><br>
+    <label><strong>Mechanic:</strong> {{ task_update.mechanic.first_name }} {{ task_update.mechanic.last_name }}</label><br>
+
+    <label><strong>Update Status:</strong></label>
+    <select name="status">
+        <option value="Pending" {% if task_update.status == 'Pending' %}selected{% endif %}>Pending</option>
+        <option value="In Progress" {% if task_update.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+        <option value="Completed" {% if task_update.status == 'Completed' %}selected{% endif %}>Completed</option>
+    </select>
+
+    <button type="submit" class="btn btn-success">Update Status</button>
+    <a href="{% url 'mechanic_assigned_tasks' %}" class="btn btn-secondary">Cancel</a>
+</form>
+
+ {% endcomment %}

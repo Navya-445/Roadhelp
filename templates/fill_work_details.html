@@ -1,0 +1,51 @@
+{% comment %} {% extends "base.html" %}
+
+{% block content %}
+<h2>Fill Work Details</h2>
+
+{% if messages %}
+    {% for message in messages %}
+        <p style="color: green;">{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+{% for task in assigned_tasks %}
+<div style="border: 1px solid #ccc; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+    <h3>Service: {{ task.service_request.service.name }}</h3>
+    <p><strong>Customer:</strong> {{ task.user.username }}</p>
+    <p><strong>Mechanic:</strong> {{ task.mechanic.first_name }} {{ task.mechanic.last_name }}</p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="task_id" value="{{ task.id }}">
+
+        <label for="location_reached_time">Location Reached Time:</label>
+        <input type="datetime-local" name="location_reached_time" required>
+
+        <label for="service_completed_time">Service Completed Time:</label>
+        <input type="datetime-local" name="service_completed_time" required>
+
+        <label for="before_service_picture">Before Service Picture:</label>
+        <input type="file" name="before_service_picture" accept="image/*">
+
+        <label for="after_service_picture">After Service Picture:</label>
+        <input type="file" name="after_service_picture" accept="image/*">
+
+        <label for="spare_parts_used">Spare Parts Used:</label>
+        <select name="spare_parts_used" multiple>
+            {% for part in spare_parts %}
+            <option value="{{ part.id }}">{{ part.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="mechanic_notes">Work Details:</label>
+        <textarea name="mechanic_notes" rows="4" required></textarea>
+
+        <button type="submit">Submit Work Details</button>
+    </form>
+</div>
+{% empty %}
+<p>No assigned tasks available.</p>
+{% endfor %}
+
+{% endblock %} {% endcomment %}

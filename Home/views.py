@@ -39,8 +39,10 @@ def adminlogin(request):
             return redirect("adminlogin")
     return render(request, "adminlogin.html")
 def customer_signup(request):
+    form = CustomerSignupForm()  # Initialize an empty form
+
     if request.method == 'POST':
-        form = CustomerSignupForm(request.POST, request.FILES)
+        form = CustomerSignupForm(request.POST)
         if form.is_valid():
             user = User.objects.create_user(
                 username=form.cleaned_data['username'],
@@ -50,11 +52,14 @@ def customer_signup(request):
             customer = form.save(commit=False)
             customer.user = user
             customer.save()
-            return redirect('customer_login')
-    else:
-        form = CustomerSignupForm()
-    return render(request, 'customer_signup.html', {'form': form})
 
+            messages.success(request, 'Signup successful! Please <a href="/customer_login/" style="color: blue; text-decoration: none; font-weight: bold;">log in</a>.')
+            form = CustomerSignupForm()  # Reset the form after successful signup
+
+        else:
+            messages.error(request, "Please correct the errors below.")
+
+    return render(request, 'customer_signup.html', {'form': form})
 
 # Mechanic Signup View
 def mechanic_signup(request):
@@ -470,6 +475,75 @@ def task_details(request, task_id):
         return redirect('task_details', task_id=task.id)  # ✅ Stay on the same page
 
     return render(request, "task_details.html", {"task": task})
+from .models import  TaskAssignment
+from .models import MechanicTaskUpdate
+from .forms import WorkDetailsForm,TaskStatusUpdateForm
+# def add_status(request):
+#     return render(request,"update_task_status.html")
+# @login_required
+# def assigned_tasks(request):
+#     """Mechanic views their assigned tasks (appointments)."""
+#     assigned_tasks = MechanicTaskUpdate.objects.filter(mechanic=request.user)
+    
+#     return render(request, 'mechanic_assigned_tasks.html', {'assigned_tasks': assigned_tasks})
+
+# @login_required
+# def update_mechanic_task_status(request, task_id):
+#     """Mechanic updates task status"""
+#     task_update = get_object_or_404(MechanicTaskUpdate, id=task_id, mechanic=request.user)
+    
+#     if request.method == 'POST':
+#         form = TaskStatusUpdateForm(request.POST, instance=task_update)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, "Task status updated successfully!")
+#             return redirect('mechanic_assigned_tasks')  # Redirect to assigned tasks page
+#     else:
+#         form = TaskStatusUpdateForm(instance=task_update)
+
+#     return render(request, 'update_task_status.html', {'form': form, 'task_update': task_update})
+
+# # @login_required
+# # @login_required
+# def add_status(request, task_id):
+#     """View to update task status only"""
+#     task = get_object_or_404(MechanicTaskUpdate, task__id=task_id)
+
+#     if request.method == 'POST':
+#         form = TaskStatusUpdateForm(request.POST, instance=task)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('work_details_filling', task_id=task.task.id)  # Redirect to work details filling
+#     else:
+#         form = TaskStatusUpdateForm(instance=task)
+
+#     return render(request, 'add_status.html', {'form': form, 'task': task})
+
+
+# @login_required
+# def work_details_filling(request, task_id):
+#     """View to allow mechanics to fill in work details"""
+#     task = get_object_or_404(MechanicTaskUpdate, task__id=task_id)
+
+#     if request.method == 'POST':
+#         form = WorkDetailsForm(request.POST, request.FILES, instance=task)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('work_history')  # Redirect to work history after completion
+#     else:
+#         form = WorkDetailsForm(instance=task)
+
+#     return render(request, 'work_details.html', {'form': form, 'task': task}) 
+
+# @login_required
+# def work_history(request):
+#     """View to display completed tasks history"""
+#     completed_tasks = MechanicTaskUpdate.objects.filter(status='Completed').order_by('-task__assigned_date')
+
+#     return render(request, 'work_history.html', {'completed_tasks': completed_tasks})
+
+
+
 
 # # Admin Task Assignment View
 # @user_passes_test(lambda u: u.is_superuser)  # Restrict to admin
