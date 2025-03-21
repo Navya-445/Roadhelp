@@ -58,7 +58,7 @@ class MechanicProfile(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     date_of_birth = models.DateField(null=True, blank=True) 
-    email = models.EmailField(unique=True)
+    email = models.EmailField()#unique=True)
     gender_choices = [('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')]
     gender = models.CharField(max_length=10, choices=gender_choices)
     profile_picture = models.ImageField(upload_to='mechanic_profiles/', null=True, blank=True)
@@ -67,14 +67,14 @@ class MechanicProfile(models.Model):
     contact_no = models.CharField(
         max_length=15, 
         validators=[RegexValidator(regex=r'^\d{10,15}$', message="Enter a valid number ")],
-        unique=True
+        #unique=True
     )
 
     # Aadhar Number Validation (12 Digits)
     aadhar_id = models.CharField(
         max_length=12, 
         validators=[RegexValidator(regex=r'^\d{12}$', message="Aadhar number must be exactly 12 digits")], 
-        unique=True
+        #unique=True
     )
 
     alternate_contact = models.CharField(max_length=15, blank=True, null=True)

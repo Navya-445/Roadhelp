@@ -17,6 +17,7 @@
     <h3>Service: {{ task.service_request.service.name }}</h3>
     <p><strong>Customer:</strong> {{ task.user.username }}</p>
     <p><strong>Mechanic:</strong> {{ task.mechanic.first_name }} {{ task.mechanic.last_name }}</p>
+    {% comment %} <p><strong>Assign Date:</strong> {{ task.assign_date|date:"Y-m-d" }}</p> {% endcomment %}
     <p><strong>Status:</strong> <span style="color: {% if task.status == 'Completed' %}green{% elif task.status == 'In Progress' %}orange{% else %}red{% endif %};">
         {{ task.status }}</span>
     </p>
