@@ -39,20 +39,32 @@ class CustomerSignupForm(forms.ModelForm):
     class Meta:
         model = Customer
         fields = ['username', 'email', 'password', 'mobile', 'address']
-
+import re
 class MechanicSignupForm(forms.ModelForm):
     username = forms.CharField(max_length=150)
     password = forms.CharField(widget=forms.PasswordInput)
+    mobile = forms.CharField(max_length=13, initial='+91')  # Default +91
+    SKILL_CHOICES = [
+        ('car_repair', 'Car Repair Expert'),
+        ('bike_service', 'Bike Service Expert'),
+    ]
+    skill = forms.ChoiceField(choices=SKILL_CHOICES, required=True)
 
     class Meta:
         model = Mechanic
         fields = ['username', 'password', 'mobile', 'skill']
 
-    def save(self, commit=True):
-        mechanic = super().save(commit=False)
-        if commit:
-            mechanic.save()
-        return mechanic
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        if len(password) < 8:
+            raise forms.ValidationError("Password must be at least 8 characters long.")
+        return password
+
+    def clean_mobile(self):
+        mobile = self.cleaned_data.get('mobile')
+        if not mobile.startswith('+91') or len(mobile) != 13 or not mobile[3:].isdigit():
+            raise forms.ValidationError("Enter a valid 10-digit mobile number with country code +91.")
+        return mobile
 from django import forms
 from .models import ServiceProvided, ServiceRequest
 

@@ -53,7 +53,7 @@ def customer_signup(request):
             customer.user = user
             customer.save()
 
-            messages.success(request, 'Signup successful! Please <a href="/customer_login/" style="color: blue; text-decoration: none; font-weight: bold;">log in</a>.')
+            messages.success(request, 'Signup successful! Please <a href={% url \'mechaniclogout\' %}"style="color: blue; text-decoration: none; font-weight: bold;">log in</a>.')
             form = CustomerSignupForm()  # Reset the form after successful signup
 
         else:
@@ -62,23 +62,53 @@ def customer_signup(request):
     return render(request, 'customer_signup.html', {'form': form})
 
 # Mechanic Signup View
+import re
+from django.urls import reverse
+
 def mechanic_signup(request):
+    form = MechanicSignupForm()  # Initialize an empty form
+
     if request.method == 'POST':
         form = MechanicSignupForm(request.POST, request.FILES)
         if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            mobile = form.cleaned_data['mobile']
+
+            # Check if username already exists
+            if User.objects.filter(username=username).exists():
+                form.add_error('username', 'This username is already taken. Please choose another.')
+
+            # Validate password length
+            if len(password) < 8:
+                form.add_error('password', 'Password must be at least 8 characters long.')
+
+            # Validate mobile number format (+91xxxxxxxxxx)
+            if not mobile.startswith('+91') or len(mobile) != 13 or not mobile[3:].isdigit():
+                form.add_error('mobile', 'Enter a valid 10-digit mobile number with country code +91.')
+
+            # If validation errors exist, show them
+            if form.errors:
+                return render(request, 'mechanic_signup.html', {'form': form})
+
+            # Create user and mechanic profile
             user = User.objects.create_user(
-                username=form.cleaned_data['username'],
-                password=form.cleaned_data['password']
+                username=username,
+                password=password
             )
             mechanic = form.save(commit=False)
             mechanic.user = user
             mechanic.save()
-            return redirect('mechanic_login')
-    else:
-        form = MechanicSignupForm()
+
+            # Display success message with logout button
+            messages.success(request, f'''Signup successful! Your account has not been approved yet. 
+                             You can <a href="{reverse('mechaniclogout')}" style="color: red; text-decoration: none; font-weight: bold;">Logout</a> now.''')
+            form = MechanicSignupForm()  # Reset the form after successful signup
+
+        else:
+            messages.error(request, "Please correct the errors below.")
+
     return render(request, 'mechanic_signup.html', {'form': form})
-
-
 # Customer Login View
 def customer_login(request):
     if request.method == 'POST':

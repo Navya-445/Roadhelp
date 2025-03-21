@@ -48,6 +48,7 @@ urlpatterns = [
     path('get-mechanics/', views.get_mechanics_by_district, name='get_mechanics_by_district'),
     path('mechanic/tasks/', views.mechanic_assigned_tasks, name='mechanic_assigned_tasks'),
     path('mechanic/task/<int:task_id>/update/', views.update_mechanic_task_status, name='update_mechanic_task_status'),]
+    # path('mechanic-success/', views.success_reg, name='mechanic_success'),
     # path('task-status', views.add_status, name='update_task_status'),
     # path('mechanic/appointments/', views.assigned_tasks, name='mechanic_assigned_tasks'),
     # path('mechanic/update-task/<int:task_id>/', views.update_mechanic_task_status, name='update_mechanic_task_status'),
