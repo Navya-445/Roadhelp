@@ -64,11 +64,7 @@ class MechanicProfile(models.Model):
     profile_picture = models.ImageField(upload_to='mechanic_profiles/', null=True, blank=True)
 
     # Mobile Number Validation (10 Digits)
-    contact_no = models.CharField(
-        max_length=15, 
-        validators=[RegexValidator(regex=r'^\d{10,15}$', message="Enter a valid number ")],
-        #unique=True
-    )
+    contact_no = models.CharField(max_length=15, blank=True, null=True)
 
     # Aadhar Number Validation (12 Digits)
     aadhar_id = models.CharField(
