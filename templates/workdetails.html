@@ -1,0 +1,45 @@
+{% comment %} {% extends 'mechanic_welcome.html' %}
+{% block content%} {% endcomment %}
+<h2>🛠 Assigned Tasks</h2>
+
+{% if assigned_tasks %}
+    <table border="1" cellpadding="10" cellspacing="0">
+        <tr>
+            <th>Task ID</th>
+            <th>Service Request</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        {% for task in assigned_tasks %}
+        <tr>
+            <td>{{ task.id }}</td>
+            <td>{{ task.service_request }}</td>
+            <td>
+                {% if task.mechanic_fill_details.exists %}
+                    <span style="color: green;">✔ Completed</span>
+                {% else %}
+                    <span style="color: red;">Pending</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if task.mechanic_fill_details.exists %}
+                    <button disabled style="background: gray; color: white; border: none; padding: 5px 10px;">
+                        Completed
+                    </button>
+                {% else %}
+                    <a href="{% url 'fill_mechanic_details' task.id %}">
+                        <button style="background: blue; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+                            Complete Work
+                        </button>
+                    </a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>No assigned tasks found.</p>
+{% endif %}
+{% comment %} {% endblock %} {% endcomment %}
+
+

@@ -551,6 +551,58 @@ def update_mechanic_task_status(request, task_id):
 
     return render(request, 'update_task_status.html', {'form': form, 'task_update': task_update})
 
+from .models import MechanicDetailsFill, TaskAssignment
+from .forms import MechanicWorkDetailsForm
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from .models import TaskAssignment, MechanicDetailsFill
+from .forms import MechanicWorkDetailsForm
+
+def mechanic_work_details(request):
+    """View listing assigned tasks with a Complete button"""
+    assigned_tasks = TaskAssignment.objects.filter(mechanic=request.user.mechanicprofile)
+    return render(request, 'workdetails.html', {'assigned_tasks': assigned_tasks})
+
+def fill_mechanic_details(request, task_id):
+    """View for mechanics to fill work details"""
+    task = get_object_or_404(TaskAssignment, id=task_id)
+
+    # Check if details already exist or create a new entry
+    mechanic_details, created = MechanicDetailsFill.objects.get_or_create(
+        task=task, 
+        mechanic=request.user.mechanicprofile, 
+        service_request=task.service_request
+    )
+
+    if request.method == "POST":
+        form = MechanicWorkDetailsForm(request.POST, request.FILES, instance=mechanic_details)
+        if form.is_valid():
+            work_details = form.save(commit=False)
+            work_details.before_image = form.cleaned_data['before_image']
+            work_details.after_image = form.cleaned_data['after_image']
+            work_details.mechanic_notes = form.cleaned_data['mechanic_notes']
+            work_details.save()  # Save before setting ManyToMany fields
+
+            # ✅ Assign spare parts correctly
+            selected_part = form.cleaned_data['used_spare_parts']
+            if selected_part:  # Ensure it's not empty
+                work_details.used_spare_parts.set([selected_part])  # Wrap in a list
+            else:
+                work_details.used_spare_parts.clear()  # Remove previous selections if "Not Used"
+
+            messages.success(request, "Work details successfully submitted.")
+            return render(request, 'success_message.html', {'task': task})  # Redirect to success page
+
+        else:
+            messages.error(request, "There was an error in the form. Please check your inputs.")
+
+    else:
+        form = MechanicWorkDetailsForm(instance=mechanic_details)
+
+    return render(request, 'fill_details.html', {'form': form, 'task': task})
+
+
 # def add_status(request):
 #     return render(request,"update_task_status.html")
 # @login_required

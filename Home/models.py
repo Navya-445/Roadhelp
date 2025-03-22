@@ -177,3 +177,45 @@ class StatusUpdate(models.Model):
 
     def __str__(self):
         return f"Mechanic {self.mechanic.first_name} - Task {self.task.id} - Status: {self.status}"
+from datetime import datetime, timedelta
+
+class MechanicDetailsFill(models.Model):
+    """Updated Model for Mechanics to Fill Work Completion Details"""
+    task = models.ForeignKey('TaskAssignment', on_delete=models.CASCADE, related_name='mechanic_fill_details')
+    mechanic = models.ForeignKey('MechanicProfile', on_delete=models.CASCADE)
+    service_request = models.ForeignKey('ServiceRequest', on_delete=models.CASCADE)
+
+    completed_date = models.DateTimeField(null=True, blank=True) 
+
+    TIME_CHOICES = [(f"{h}:00 {ampm}", f"{h}:00 {ampm}") for h in range(1, 13) for ampm in ["AM", "PM"]]
+
+    reached_time = models.CharField(max_length=10, choices=TIME_CHOICES, null=True, blank=True)
+    finished_time = models.CharField(max_length=10, choices=TIME_CHOICES, null=True, blank=True)
+
+    before_image = models.ImageField(upload_to='service_pics/', null=True, blank=True)
+    after_image = models.ImageField(upload_to='service_pics/', null=True, blank=True)
+
+    used_spare_parts = models.ManyToManyField(SparePart, blank=True)
+    mechanic_notes = models.TextField(blank=True, null=True)
+
+    def calculate_total_time(self):
+        """Calculate total work duration"""
+        if self.reached_time and self.finished_time:
+            try:
+                start = timezone.datetime.strptime(self.reached_time, "%I:%M %p")
+                end = timezone.datetime.strptime(self.finished_time, "%I:%M %p")
+                if end < start:
+                    end += timezone.timedelta(days=1)  # Adjust for next day
+                return end - start
+            except ValueError:
+                return None
+        return None
+
+    total_duration = models.DurationField(null=True, blank=True, editable=False)
+
+    def save(self, *args, **kwargs):
+        self.total_duration = self.calculate_total_time()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Task: {self.task.id} | Mechanic: {self.mechanic} | Date: {self.completed_date}"

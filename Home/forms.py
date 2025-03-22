@@ -211,4 +211,48 @@ class StatusUpdateForm(forms.ModelForm):
         model = StatusUpdate
         fields = ['status', 'remarks']
 
+from .models import MechanicDetailsFill
 
+class MechanicWorkDetailsForm(forms.ModelForm):
+    """Form for mechanics to fill work details"""
+    
+    used_spare_parts = forms.ModelChoiceField(
+        queryset=SparePart.objects.all(), 
+        required=False,  # Allow "Not Used"
+        empty_label="Not Used",  # Default option
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+    class Meta:
+        model = MechanicDetailsFill
+        fields = [
+            'completed_date', 'reached_time', 'finished_time', 
+            'before_image', 'after_image', 'used_spare_parts', 'mechanic_notes'
+        ]
+        widgets = {
+            'completed_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'reached_time': forms.Select(attrs={'class': 'form-control'}),
+            'finished_time': forms.Select(attrs={'class': 'form-control'}),
+            'before_image': forms.FileInput(attrs={'class': 'form-control'}),
+            'after_image': forms.FileInput(attrs={'class': 'form-control'}),
+            'mechanic_notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+
+    def clean(self):
+        """Validate time selection and auto-calculate total duration"""
+        cleaned_data = super().clean()
+        reached_time = cleaned_data.get("reached_time")
+        finished_time = cleaned_data.get("finished_time")
+
+        if reached_time and finished_time:
+            from datetime import datetime
+            try:
+                start_time = datetime.strptime(reached_time, "%I:%M %p")
+                end_time = datetime.strptime(finished_time, "%I:%M %p")
+
+                if end_time < start_time:
+                    self.add_error('finished_time', "Invalid Time: End time must be after start time.")
+            except ValueError:
+                self.add_error('finished_time', "Invalid Time Format.")
+
+        return cleaned_data

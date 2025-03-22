@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-
+from .models import MechanicDetailsFill
 from .models import Customer, Mechanic
 from .models import Customer, Mechanic, MechanicProfile, ServiceProvided, ServiceRequest, TaskAssignment,SparePart, MechanicTaskUpdate, StatusUpdate
 
@@ -66,5 +66,11 @@ class MechanicTaskUpdateAdmin(admin.ModelAdmin):
 @admin.register(StatusUpdate)
 class StatusUpdateAdmin(admin.ModelAdmin):
     list_display = ['task', 'mechanic', 'service_request', 'status', 'updated_at']
+@admin.register(MechanicDetailsFill)
+class MechanicDetailsAdmin(admin.ModelAdmin):
+    list_display = ('task', 'mechanic', 'completed_date', 'reached_time', 'finished_time', 'total_duration')
+    search_fields = ('task__id', 'mechanic__user__username')
+    list_filter = ('completed_date',)
+
 
 

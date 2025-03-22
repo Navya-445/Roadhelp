@@ -1,0 +1,126 @@
+
+<div class="container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" style="padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <h2>📝 Fill Work Details - Task {{ task.id }}</h2>
+
+    <form method="post" enctype="multipart/form-data" id="mechanicForm">
+        {% csrf_token %}
+
+        <label for="id_completed_date">Completed Date:</label>
+        {{ form.completed_date }}
+
+        <label for="id_reached_time">Reached Time:</label>
+        {{ form.reached_time }}
+
+        <label for="id_finished_time">Finished Time:</label>
+        {{ form.finished_time }}
+
+        <label for="id_before_image">Before Image:</label>
+        {{ form.before_image }}
+
+        <label for="id_after_image">After Image:</label>
+        {{ form.after_image }}
+
+        <label for="id_used_spare_parts">Used Spare Parts:</label>
+        {{ form.used_spare_parts }}
+
+        <label for="id_mechanic_notes">Mechanic Notes:</label>
+        {{ form.mechanic_notes }}
+
+        <p><strong>Total Time Taken:</strong> <span id="totalTime" style="font-weight: bold;"></span></p>
+
+        <button type="submit" style="background: green; color: white; padding: 8px 15px; border: none; cursor: pointer;">
+            ✅ Submit
+        </button>
+    </form>
+
+    <!-- Back to Details Page Link -->
+    <p>
+        <a href="{% url 'mechanic_work_details' %}" style="text-decoration: none; color: blue;">🔙 Back to Work Details</a>
+    </p>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function convertTo24HourFormat(timeStr) {
+            let [time, modifier] = timeStr.split(" ");
+            let [hours, minutes] = time.split(":");
+            if (modifier === "PM" && hours !== "12") hours = parseInt(hours) + 12;
+            if (modifier === "AM" && hours === "12") hours = "00";
+            return `${hours}:${minutes}`;
+        }
+
+        function calculateTotalTime() {
+            let startTime = document.querySelector("#id_reached_time").value;
+            let endTime = document.querySelector("#id_finished_time").value;
+            let totalTimeField = document.querySelector("#totalTime");
+
+            if (startTime && endTime) {
+                let start = new Date(`2023-01-01T${convertTo24HourFormat(startTime)}:00`);
+                let end = new Date(`2023-01-01T${convertTo24HourFormat(endTime)}:00`);
+
+                if (end < start) {
+                    totalTimeField.textContent = "Invalid Time ❌";
+                    totalTimeField.style.color = "red";
+                } else {
+                    let diff = (end - start) / 60000; // Convert ms to minutes
+                    totalTimeField.textContent = diff + " minutes ⏳";
+                    totalTimeField.style.color = "green";
+                }
+            }
+        }
+
+        document.querySelector("#id_reached_time").addEventListener("change", calculateTotalTime);
+        document.querySelector("#id_finished_time").addEventListener("change", calculateTotalTime);
+    });
+</script>
+
+<hr>
+
+<h2>🛠 Assigned Tasks</h2>
+
+{% if assigned_tasks %}
+    <table border="1" cellpadding="10" cellspacing="0">
+        <tr>
+            <th>Task ID</th>
+            <th>Service Request</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        {% for task in assigned_tasks %}
+        <tr>
+            <td>{{ task.id }}</td>
+            <td>{{ task.service_request }}</td>
+            <td>
+                {% if task.mechanic_fill_details.exists %}
+                    <span style="color: green;">✔ Completed</span>
+                {% else %}
+                    <span style="color: red;">Pending</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if task.mechanic_fill_details.exists %}
+                    <button disabled style="background: gray; color: white; border: none; padding: 5px 10px;">
+                        Completed
+                    </button>
+                {% else %}
+                    <a href="{% url 'fill_mechanic_details' task.id %}">
+                        <button style="background: blue; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+                            Complete Work
+                        </button>
+                    </a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>No assigned tasks found.</p>
+{% endif %}
