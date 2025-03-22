@@ -316,6 +316,8 @@ def complete_profile(request):
             form.save()
             messages.success(request, "Your profile has been saved successfully.")
             return redirect('view_profile')
+        else:
+            messages.error(request, "There were errors in the form. Please correct them.")
 
     else:
         form = MechanicProfileForm(instance=mechanic_profile)

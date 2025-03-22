@@ -101,6 +101,17 @@ KERALA_DISTRICTS = [
 
 class MechanicProfileForm(forms.ModelForm):
     district = forms.ChoiceField(choices=KERALA_DISTRICTS, label="District")
+    contact_no = forms.CharField(
+        max_length=13, 
+        initial='+91', 
+        label="Contact Number"
+    )
+    alternate_contact = forms.CharField(
+        max_length=13, 
+        required=False, 
+        initial='+91', 
+        label="Alternate Contact Number"
+    )
 
     class Meta:
         model = MechanicProfile
@@ -110,11 +121,22 @@ class MechanicProfileForm(forms.ModelForm):
             'state', 'city', 'district', 'specialization'
         ]
         widgets = {
-            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),  # Date picker
+            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
             'gender': forms.Select(),
             'specialization': forms.Select()
         }
 
+    def clean_contact_no(self):
+        contact_no = self.cleaned_data.get('contact_no')
+        if not contact_no.startswith('+91') or len(contact_no) != 13 or not contact_no[3:].isdigit():
+            raise forms.ValidationError("Enter a valid 10-digit mobile number with country code +91.")
+        return contact_no
+
+    def clean_alternate_contact(self):
+        alternate_contact = self.cleaned_data.get('alternate_contact')
+        if alternate_contact and (not alternate_contact.startswith('+91') or len(alternate_contact) != 13 or not alternate_contact[3:].isdigit()):
+            raise forms.ValidationError("Enter a valid 10-digit mobile number with country code +91.")
+        return alternate_contact
 class ServiceRequestForm(forms.ModelForm):
     state = forms.CharField(initial="Kerala", disabled=True)  # Pre-filled, read-only
 
