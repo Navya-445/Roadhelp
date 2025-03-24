@@ -267,3 +267,23 @@ class MechanicWorkDetailsForm(forms.ModelForm):
                 self.add_error('finished_time', "Invalid Time Format.")
 
         return cleaned_data
+from .models import Feedback    
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = [
+            'name', 'overall_experience', 'service_quality', 'staff_behavior', 
+            'wait_time', 'pricing_satisfaction', 'problem_resolution', 
+            'recommend', 'any_suggestions'
+        ]
+
+        widgets = {
+            'overall_experience': forms.RadioSelect(choices=[(i, i) for i in range(1, 6)]),
+            'service_quality': forms.RadioSelect(choices=[(i, i) for i in range(1, 6)]),
+            'staff_behavior': forms.RadioSelect(choices=[(i, i) for i in range(1, 6)]),
+            'wait_time': forms.RadioSelect(choices=[(i, i) for i in range(1, 6)]),
+            'pricing_satisfaction': forms.RadioSelect(choices=[(i, i) for i in range(1, 6)]),
+            'problem_resolution': forms.RadioSelect(choices=[(i, i) for i in range(1, 6)]),
+            'recommend': forms.RadioSelect(choices=[(True, 'Yes'), (False, 'No')]),
+            'any_suggestions': forms.Textarea(attrs={'placeholder': 'Write any suggestions here...', 'rows': 3}),
+        }

@@ -607,6 +607,42 @@ def fill_mechanic_details(request, task_id):
 
     return render(request, 'fill_details.html', {'form': form, 'task': task})
 
+from .models import Feedback, ServiceRequest
+from .forms import FeedbackForm
+
+
+@login_required
+def feedback_list(request):
+    """ List all completed service requests for feedback submission for the logged-in user """
+    
+    # Fetch only the tasks assigned to the logged-in customer
+    customer_tasks = TaskAssignment.objects.filter(
+        service_request__user=request.user  # Only fetch requests by the logged-in user
+    ).select_related('service_request__service', 'mechanic')  # Optimize queries
+
+    return render(request, 'feedback_list.html', {
+        'customer_tasks': customer_tasks
+    })
+
+def fill_feedback(request, service_request_id):
+    """ Render and handle feedback form submission """
+    service_request = get_object_or_404(ServiceRequest, id=service_request_id)
+    
+    if request.method == "POST":
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.service_request = service_request
+            feedback.mechanic = service_request.assigned_mechanic  # Assuming mechanic is linked
+            feedback.save()
+            messages.success(request, "Feedback submitted successfully!")
+            return render(request, 'feedback_success.html')  # Directly render success page
+        
+    else:
+        form = FeedbackForm()
+
+    return render(request, 'fill_feedback.html', {'form': form, 'service_request': service_request})
+
 # def add_status(request):
 #     return render(request,"update_task_status.html")
 # @login_required

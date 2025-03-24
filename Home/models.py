@@ -224,3 +224,22 @@ class MechanicDetailsFill(models.Model):
 
     def __str__(self):
         return f"Task: {self.task.id} | Mechanic: {self.mechanic} | Date: {self.completed_date}"
+
+class Feedback(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)  
+    service_request = models.ForeignKey(ServiceRequest, on_delete=models.CASCADE)
+    mechanic = models.ForeignKey(MechanicProfile, on_delete=models.CASCADE)
+    
+    name = models.CharField(max_length=255)  
+    overall_experience = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    service_quality = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    staff_behavior = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    wait_time = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    pricing_satisfaction = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    problem_resolution = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    recommend = models.BooleanField(default=True)
+    any_suggestions = models.TextField(blank=True, null=True)  
+    submitted_at = models.DateTimeField(auto_now_add=True)  
+
+    def __str__(self):
+        return f"Feedback by {self.name} for {self.service_request.service}"

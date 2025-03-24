@@ -1,0 +1,66 @@
+
+<div class="container">
+    <h2>Submit Feedback for {{ service_request.service.name }}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <label for="id_name">Your Name:</label>
+        {{ form.name }}
+
+        <label>Overall Experience:</label>
+        <div class="rating">
+            {{ form.overall_experience }}
+        </div>
+
+        <label>Service Quality:</label>
+        <div class="rating">
+            {{ form.service_quality }}
+        </div>
+
+        <label>Staff Behavior:</label>
+        <div class="rating">
+            {{ form.staff_behavior }}
+        </div>
+
+        <label>Wait Time:</label>
+        <div class="rating">
+            {{ form.wait_time }}
+        </div>
+
+        <label>Pricing Satisfaction:</label>
+        <div class="rating">
+            {{ form.pricing_satisfaction }}
+        </div>
+
+        <label>Problem Resolution:</label>
+        <div class="rating">
+            {{ form.problem_resolution }}
+        </div>
+
+        <label>Would you recommend us?</label>
+        <div>
+            {{ form.recommend }}
+        </div>
+
+        <label for="id_any_suggestions">Any Suggestions:</label>
+        {{ form.any_suggestions }}
+
+        <button type="submit" class="btn btn-primary">Submit Feedback</button>
+    </form>
+</div>
+
+<style>
+    .rating input {
+        display: none;
+    }
+    .rating label {
+        font-size: 25px;
+        cursor: pointer;
+        color: gray;
+    }
+    .rating input:checked ~ label {
+        color: gold;
+    }
+</style>
+

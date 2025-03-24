@@ -71,6 +71,11 @@ class MechanicDetailsAdmin(admin.ModelAdmin):
     list_display = ('task', 'mechanic', 'completed_date', 'reached_time', 'finished_time', 'total_duration')
     search_fields = ('task__id', 'mechanic__user__username')
     list_filter = ('completed_date',)
-
+from .models import Feedback
+@admin.register(Feedback)
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = ('name', 'service_request', 'mechanic', 'overall_experience', 'submitted_at')
+    search_fields = ('name', 'service_request__service', 'mechanic__first_name', 'mechanic__last_name')
+    list_filter = ('overall_experience', 'submitted_at')
 
 

@@ -1,0 +1,26 @@
+<h2>Feedback List</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Service Name</th>
+            <th>Mechanic</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in customer_tasks %}
+        <tr>
+            <td>{{ task.service_request.service.name }}</td> <!-- Service Name -->
+            <td>{{ task.mechanic.first_name }} {{ task.mechanic.last_name }}</td> <!-- Mechanic Name -->
+            <td>
+                <a href="{% url 'fill_feedback' task.service_request.id %}">Complete Feedback</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No completed service requests available for feedback.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
