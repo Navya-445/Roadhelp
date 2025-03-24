@@ -178,7 +178,7 @@ class StatusUpdate(models.Model):
     def __str__(self):
         return f"Mechanic {self.mechanic.first_name} - Task {self.task.id} - Status: {self.status}"
 from datetime import datetime, timedelta
-
+from django.utils import timezone
 class MechanicDetailsFill(models.Model):
     """Updated Model for Mechanics to Fill Work Completion Details"""
     task = models.ForeignKey('TaskAssignment', on_delete=models.CASCADE, related_name='mechanic_fill_details')
@@ -187,7 +187,12 @@ class MechanicDetailsFill(models.Model):
 
     completed_date = models.DateTimeField(null=True, blank=True) 
 
-    TIME_CHOICES = [(f"{h}:00 {ampm}", f"{h}:00 {ampm}") for h in range(1, 13) for ampm in ["AM", "PM"]]
+    TIME_CHOICES = [
+    (f"{h}:{m:02d} {ampm}", f"{h}:{m:02d} {ampm}") 
+    for h in range(1, 13) 
+    for m in range(0, 60) 
+    for ampm in ["AM", "PM"]
+]
 
     reached_time = models.CharField(max_length=10, choices=TIME_CHOICES, null=True, blank=True)
     finished_time = models.CharField(max_length=10, choices=TIME_CHOICES, null=True, blank=True)
@@ -202,10 +207,10 @@ class MechanicDetailsFill(models.Model):
         """Calculate total work duration"""
         if self.reached_time and self.finished_time:
             try:
-                start = timezone.datetime.strptime(self.reached_time, "%I:%M %p")
-                end = timezone.datetime.strptime(self.finished_time, "%I:%M %p")
+                start = datetime.strptime(self.reached_time, "%I:%M %p")
+                end = datetime.strptime(self.finished_time, "%I:%M %p")
                 if end < start:
-                    end += timezone.timedelta(days=1)  # Adjust for next day
+                     end += timedelta(days=1)  # Adjust for next day
                 return end - start
             except ValueError:
                 return None

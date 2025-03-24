@@ -556,7 +556,7 @@ from .forms import MechanicWorkDetailsForm
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from .models import TaskAssignment, MechanicDetailsFill
+from .models import TaskAssignment, MechanicDetailsFill,SparePart
 from .forms import MechanicWorkDetailsForm
 
 def mechanic_work_details(request):
@@ -577,22 +577,27 @@ def fill_mechanic_details(request, task_id):
 
     if request.method == "POST":
         form = MechanicWorkDetailsForm(request.POST, request.FILES, instance=mechanic_details)
+        
         if form.is_valid():
             work_details = form.save(commit=False)
-            work_details.before_image = form.cleaned_data['before_image']
-            work_details.after_image = form.cleaned_data['after_image']
-            work_details.mechanic_notes = form.cleaned_data['mechanic_notes']
-            work_details.save()  # Save before setting ManyToMany fields
-
+            work_details.before_image = form.cleaned_data.get('before_image')
+            work_details.after_image = form.cleaned_data.get('after_image')
+            work_details.mechanic_notes = form.cleaned_data.get('mechanic_notes')
+            
             # ✅ Assign spare parts correctly
-            selected_part = form.cleaned_data['used_spare_parts']
-            if selected_part:  # Ensure it's not empty
-                work_details.used_spare_parts.set([selected_part])  # Wrap in a list
+            selected_parts = form.cleaned_data.get('used_spare_parts')
+
+            if "not_used" in selected_parts:  
+                work_details.used_spare_parts.clear()  # ✅ If "Not Used" is selected, remove previous selections
             else:
-                work_details.used_spare_parts.clear()  # Remove previous selections if "Not Used"
+                spare_part_objects = SparePart.objects.filter(id__in=selected_parts)
+                work_details.used_spare_parts.set(spare_part_objects)  # ✅ Assign multiple spare parts
+
+            # ✅ Save the updated work details
+            work_details.save()
 
             messages.success(request, "Work details successfully submitted.")
-            return render(request, 'success_message.html', {'task': task})  # Redirect to success page
+            return render(request, 'success_message.html', {'task': task})   # ✅ Redirect instead of rendering directly
 
         else:
             messages.error(request, "There was an error in the form. Please check your inputs.")
@@ -601,7 +606,6 @@ def fill_mechanic_details(request, task_id):
         form = MechanicWorkDetailsForm(instance=mechanic_details)
 
     return render(request, 'fill_details.html', {'form': form, 'task': task})
-
 
 # def add_status(request):
 #     return render(request,"update_task_status.html")

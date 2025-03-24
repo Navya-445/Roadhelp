@@ -213,14 +213,20 @@ class StatusUpdateForm(forms.ModelForm):
 
 from .models import MechanicDetailsFill
 
+from datetime import datetime
+from django import forms
+from .models import MechanicDetailsFill, SparePart
+
 class MechanicWorkDetailsForm(forms.ModelForm):
     """Form for mechanics to fill work details"""
-    
-    used_spare_parts = forms.ModelChoiceField(
-        queryset=SparePart.objects.all(), 
-        required=False,  # Allow "Not Used"
-        empty_label="Not Used",  # Default option
-        widget=forms.Select(attrs={'class': 'form-control'})
+
+    SPARE_PART_CHOICES = [(part.id, part.name) for part in SparePart.objects.all()]
+    SPARE_PART_CHOICES.insert(0, ("not_used", "Not Used"))  # ✅ Add "Not Used" as an option
+
+    used_spare_parts = forms.MultipleChoiceField(
+        choices=SPARE_PART_CHOICES,
+        required=False,
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-check'})
     )
 
     class Meta:
@@ -245,13 +251,18 @@ class MechanicWorkDetailsForm(forms.ModelForm):
         finished_time = cleaned_data.get("finished_time")
 
         if reached_time and finished_time:
-            from datetime import datetime
             try:
+                # Ensure the format is correct before parsing
                 start_time = datetime.strptime(reached_time, "%I:%M %p")
                 end_time = datetime.strptime(finished_time, "%I:%M %p")
 
+                # Allow midnight crossing
                 if end_time < start_time:
-                    self.add_error('finished_time', "Invalid Time: End time must be after start time.")
+                    end_time = end_time.replace(day=start_time.day + 1)
+
+                # Validate that the difference is not zero
+                if start_time == end_time:
+                    self.add_error('finished_time', "Start time and end time cannot be the same.")
             except ValueError:
                 self.add_error('finished_time', "Invalid Time Format.")
 

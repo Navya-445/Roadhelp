@@ -1,5 +1,5 @@
-
 <div class="container">
+    <!-- ✅ Display Messages -->
     {% if messages %}
         {% for message in messages %}
             <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" style="padding: 10px; margin-bottom: 10px; border-radius: 5px;">
@@ -29,16 +29,25 @@
         {{ form.after_image }}
 
         <label for="id_used_spare_parts">Used Spare Parts:</label>
-        {{ form.used_spare_parts }}
+        <div>
+            {% for checkbox in form.used_spare_parts %}
+                <label style="margin-right: 10px;">{{ checkbox.tag }} {{ checkbox.choice_label }}</label>
+            {% endfor %}
+        </div>
 
         <label for="id_mechanic_notes">Mechanic Notes:</label>
         {{ form.mechanic_notes }}
 
         <p><strong>Total Time Taken:</strong> <span id="totalTime" style="font-weight: bold;"></span></p>
 
-        <button type="submit" style="background: green; color: white; padding: 8px 15px; border: none; cursor: pointer;">
+        <button type="submit" id="submitBtn" style="background: green; color: white; padding: 8px 15px; border: none; cursor: pointer;">
             ✅ Submit
         </button>
+
+        <!-- ✅ Add a Loader for Better UX -->
+        <div id="loadingMessage" style="display: none; margin-top: 10px; color: blue;">
+            ⏳ Submitting your details, please wait...
+        </div>
     </form>
 
     <!-- Back to Details Page Link -->
@@ -47,14 +56,22 @@
     </p>
 </div>
 
+<!-- ✅ JavaScript for Time Calculation and Form Submission UX -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         function convertTo24HourFormat(timeStr) {
             let [time, modifier] = timeStr.split(" ");
             let [hours, minutes] = time.split(":");
-            if (modifier === "PM" && hours !== "12") hours = parseInt(hours) + 12;
-            if (modifier === "AM" && hours === "12") hours = "00";
-            return `${hours}:${minutes}`;
+            hours = parseInt(hours);
+
+            if (modifier === "PM" && hours !== 12) {
+                hours += 12;
+            }
+            if (modifier === "AM" && hours === 12) {
+                hours = 0;
+            }
+
+            return `${hours.toString().padStart(2, '0')}:${minutes}`;
         }
 
         function calculateTotalTime() {
@@ -63,14 +80,17 @@
             let totalTimeField = document.querySelector("#totalTime");
 
             if (startTime && endTime) {
-                let start = new Date(`2023-01-01T${convertTo24HourFormat(startTime)}:00`);
-                let end = new Date(`2023-01-01T${convertTo24HourFormat(endTime)}:00`);
+                let start24 = convertTo24HourFormat(startTime);
+                let end24 = convertTo24HourFormat(endTime);
+
+                let start = new Date(`2023-01-01T${start24}:00`);
+                let end = new Date(`2023-01-01T${end24}:00`);
 
                 if (end < start) {
                     totalTimeField.textContent = "Invalid Time ❌";
                     totalTimeField.style.color = "red";
                 } else {
-                    let diff = (end - start) / 60000; // Convert ms to minutes
+                    let diff = (end - start) / 60000; // Convert milliseconds to minutes
                     totalTimeField.textContent = diff + " minutes ⏳";
                     totalTimeField.style.color = "green";
                 }
@@ -79,6 +99,12 @@
 
         document.querySelector("#id_reached_time").addEventListener("change", calculateTotalTime);
         document.querySelector("#id_finished_time").addEventListener("change", calculateTotalTime);
+
+        // ✅ Handle Form Submission with Loader
+        document.querySelector("#mechanicForm").addEventListener("submit", function () {
+            document.querySelector("#submitBtn").disabled = true;
+            document.querySelector("#loadingMessage").style.display = "block";
+        });
     });
 </script>
 
@@ -87,8 +113,8 @@
 <h2>🛠 Assigned Tasks</h2>
 
 {% if assigned_tasks %}
-    <table border="1" cellpadding="10" cellspacing="0">
-        <tr>
+    <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; text-align: center;">
+        <tr style="background: #f4f4f4;">
             <th>Task ID</th>
             <th>Service Request</th>
             <th>Status</th>
