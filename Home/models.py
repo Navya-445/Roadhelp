@@ -231,12 +231,12 @@ class Feedback(models.Model):
     mechanic = models.ForeignKey(MechanicProfile, on_delete=models.CASCADE)
     
     name = models.CharField(max_length=255)  
-    overall_experience = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
-    service_quality = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
-    staff_behavior = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
-    wait_time = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
-    pricing_satisfaction = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
-    problem_resolution = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    overall_experience = models.IntegerField(default=1, null=True, blank=True)  # Default rating is 1 star
+    service_quality = models.IntegerField(default=1, null=True, blank=True)
+    staff_behavior = models.IntegerField(default=1, null=True, blank=True)
+    wait_time = models.IntegerField(default=1, null=True, blank=True)
+    pricing_satisfaction = models.IntegerField(default=1, null=True, blank=True)
+    problem_resolution = models.IntegerField(default=1, null=True, blank=True)
     recommend = models.BooleanField(default=True)
     any_suggestions = models.TextField(blank=True, null=True)  
     submitted_at = models.DateTimeField(auto_now_add=True)  

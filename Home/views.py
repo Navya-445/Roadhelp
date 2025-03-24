@@ -596,7 +596,7 @@ def fill_mechanic_details(request, task_id):
             # ✅ Save the updated work details
             work_details.save()
 
-            messages.success(request, "Work details successfully submitted.")
+            # messages.success(request, "Work details successfully submitted.")
             return render(request, 'success_message.html', {'task': task})   # ✅ Redirect instead of rendering directly
 
         else:
@@ -613,36 +613,44 @@ from .forms import FeedbackForm
 
 @login_required
 def feedback_list(request):
-    """ List all completed service requests for feedback submission for the logged-in user """
+    """ List all service requests for feedback submission for the logged-in user """
     
-    # Fetch only the tasks assigned to the logged-in customer
+    # Fetch only tasks assigned to the logged-in customer
     customer_tasks = TaskAssignment.objects.filter(
-        service_request__user=request.user  # Only fetch requests by the logged-in user
-    ).select_related('service_request__service', 'mechanic')  # Optimize queries
+        service_request__user=request.user
+    ).select_related('service_request__service', 'mechanic')
+
+    # Add feedback status for each task
+    for task in customer_tasks:
+        task.is_feedback_completed = Feedback.objects.filter(service_request=task.service_request).exists()
 
     return render(request, 'feedback_list.html', {
         'customer_tasks': customer_tasks
     })
-
+@login_required
 def fill_feedback(request, service_request_id):
-    """ Render and handle feedback form submission """
     service_request = get_object_or_404(ServiceRequest, id=service_request_id)
-    
+    task_assignment = TaskAssignment.objects.filter(service_request=service_request).first()
+
     if request.method == "POST":
         form = FeedbackForm(request.POST)
         if form.is_valid():
             feedback = form.save(commit=False)
             feedback.service_request = service_request
-            feedback.mechanic = service_request.assigned_mechanic  # Assuming mechanic is linked
+            feedback.mechanic = task_assignment.mechanic if task_assignment else None  # Ensure mechanic exists
+            feedback.user = request.user  # Assign the logged-in user
             feedback.save()
-            messages.success(request, "Feedback submitted successfully!")
-            return render(request, 'feedback_success.html')  # Directly render success page
-        
+            # messages.success(request, "Feedback submitted successfully!")
+            return render(request, "feedback_success.html")
+            
+            
+            # ✅ Redirect to the feedback list page instead of rendering another template
+            # return redirect("feedback_list")  
+
     else:
         form = FeedbackForm()
 
-    return render(request, 'fill_feedback.html', {'form': form, 'service_request': service_request})
-
+    return render(request, "fill_feedback.html", {"form": form, "service_request": service_request})
 # def add_status(request):
 #     return render(request,"update_task_status.html")
 # @login_required

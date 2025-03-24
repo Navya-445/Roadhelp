@@ -268,22 +268,30 @@ class MechanicWorkDetailsForm(forms.ModelForm):
 
         return cleaned_data
 from .models import Feedback    
+STAR_CHOICES = [(i, f"{i} ⭐") for i in range(1, 6)]
 class FeedbackForm(forms.ModelForm):
+      # Dropdown choices with stars
+
     class Meta:
         model = Feedback
         fields = [
-            'name', 'overall_experience', 'service_quality', 'staff_behavior', 
-            'wait_time', 'pricing_satisfaction', 'problem_resolution', 
-            'recommend', 'any_suggestions'
+            "name",
+            "overall_experience",
+            "service_quality",
+            "staff_behavior",
+            "wait_time",
+            "pricing_satisfaction",
+            "problem_resolution",
+            "recommend",
+            "any_suggestions",
         ]
-
         widgets = {
-            'overall_experience': forms.RadioSelect(choices=[(i, i) for i in range(1, 6)]),
-            'service_quality': forms.RadioSelect(choices=[(i, i) for i in range(1, 6)]),
-            'staff_behavior': forms.RadioSelect(choices=[(i, i) for i in range(1, 6)]),
-            'wait_time': forms.RadioSelect(choices=[(i, i) for i in range(1, 6)]),
-            'pricing_satisfaction': forms.RadioSelect(choices=[(i, i) for i in range(1, 6)]),
-            'problem_resolution': forms.RadioSelect(choices=[(i, i) for i in range(1, 6)]),
-            'recommend': forms.RadioSelect(choices=[(True, 'Yes'), (False, 'No')]),
-            'any_suggestions': forms.Textarea(attrs={'placeholder': 'Write any suggestions here...', 'rows': 3}),
+            "overall_experience": forms.Select(choices=STAR_CHOICES, attrs={"class": "form-control"}),
+            "service_quality": forms.Select(choices=STAR_CHOICES, attrs={"class": "form-control"}),
+            "staff_behavior": forms.Select(choices=STAR_CHOICES, attrs={"class": "form-control"}),
+            "wait_time": forms.Select(choices=STAR_CHOICES, attrs={"class": "form-control"}),
+            "pricing_satisfaction": forms.Select(choices=STAR_CHOICES, attrs={"class": "form-control"}),
+            "problem_resolution": forms.Select(choices=STAR_CHOICES, attrs={"class": "form-control"}),
+            "recommend": forms.RadioSelect(choices=[(True, "Yes"), (False, "No")]),
+            "any_suggestions": forms.Textarea(attrs={"rows": 3, "placeholder": "Any suggestions?"}),
         }

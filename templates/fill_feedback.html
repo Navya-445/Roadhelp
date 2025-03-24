@@ -8,35 +8,23 @@
         <label for="id_name">Your Name:</label>
         {{ form.name }}
 
-        <label>Overall Experience:</label>
-        <div class="rating">
-            {{ form.overall_experience }}
-        </div>
+        <label for="id_overall_experience">Overall Experience:</label>
+        {{ form.overall_experience }}
 
-        <label>Service Quality:</label>
-        <div class="rating">
-            {{ form.service_quality }}
-        </div>
+        <label for="id_service_quality">Service Quality:</label>
+        {{ form.service_quality }}
 
-        <label>Staff Behavior:</label>
-        <div class="rating">
-            {{ form.staff_behavior }}
-        </div>
+        <label for="id_staff_behavior">Staff Behavior:</label>
+        {{ form.staff_behavior }}
 
-        <label>Wait Time:</label>
-        <div class="rating">
-            {{ form.wait_time }}
-        </div>
+        <label for="id_wait_time">Wait Time:</label>
+        {{ form.wait_time }}
 
-        <label>Pricing Satisfaction:</label>
-        <div class="rating">
-            {{ form.pricing_satisfaction }}
-        </div>
+        <label for="id_pricing_satisfaction">Pricing Satisfaction:</label>
+        {{ form.pricing_satisfaction }}
 
-        <label>Problem Resolution:</label>
-        <div class="rating">
-            {{ form.problem_resolution }}
-        </div>
+        <label for="id_problem_resolution">Problem Resolution:</label>
+        {{ form.problem_resolution }}
 
         <label>Would you recommend us?</label>
         <div>
@@ -51,16 +39,63 @@
 </div>
 
 <style>
-    .rating input {
-        display: none;
+    /* Styling for dropdowns */
+    select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-bottom: 10px;
     }
-    .rating label {
-        font-size: 25px;
+
+    /* Radio button styling */
+    input[type="radio"] {
+        margin-right: 5px;
+    }
+
+    /* Form container */
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-weight: bold;
+        margin-top: 10px;
+        display: block;
+    }
+
+    textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        background: #007bff;
+        color: white;
+        font-size: 18px;
+        border-radius: 5px;
         cursor: pointer;
-        color: gray;
+        margin-top: 15px;
     }
-    .rating input:checked ~ label {
-        color: gold;
+
+    button:hover {
+        background: #0056b3;
     }
 </style>
 
