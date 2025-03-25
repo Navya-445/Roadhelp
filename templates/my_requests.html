@@ -1,5 +1,8 @@
-{% comment %} {% extends "customer_templates/base.html" %}
-{% block content %} {% endcomment %}
+{% extends 'base_cust.html' %}
+
+{% block title %}Manage mechanics{% endblock %}
+{% block content %}
+
 <h2>My Requests</h2>
 <table>
     <tr>
@@ -20,6 +23,7 @@
 { <a href="https://wa.me/{{ mechanic.Mob_num }}?text=Hello, I would like to chat about your counseling." target="_blank">
     Contact Mechanic on WhatsApp
 </a> 
+{% endblock %}
  
 
 

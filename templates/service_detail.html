@@ -1,28 +1,59 @@
-<h2>{{ service.name }}</h2>
-<img src="{{ service.picture.url }}" width="250" alt="Service Image">
+{% extends 'base_cust.html' %}
 
-{% if service.additional_picture %}
-    <h3>Additional Picture</h3>
-    <img src="{{ service.additional_picture.url }}" width="250" alt="Additional Image">
-{% endif %}
+{% block title %}Manage mechanics{% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Details</title>
+</head>
+<body style="font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f8f9fa; color: #333;">
 
-<p>{{ service.long_description }}</p>
+    <div style="max-width: 800px; margin: 50px auto; background: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
+        
+        <h2 style="color: #007bff; text-align: center; font-weight: bold;">{{ service.name }}</h2>
 
-<h3>Points to Remember</h3>
-<p>{{ service.points_to_remember }}</p>
+        <!-- Service Image -->
+        <div style="text-align: center; margin: 20px 0;">
+            <img src="{{ service.picture.url }}" alt="Service Image" style="width: 100%; max-width: 250px; border-radius: 10px; transition: transform 0.3s ease-in-out;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
 
-<!-- Display success/error messages -->
-{% if messages %}
-    <div>
-        {% for message in messages %}
-            <p class="{{ message.tags }}">{{ message }}</p>
-        {% endfor %}
+        <!-- Additional Image (if available) -->
+        {% if service.additional_picture %}
+        <h3 style="color: #007bff; text-align: center; font-weight: bold;">Additional Picture</h3>
+        <div style="text-align: center; margin: 20px 0;">
+            <img src="{{ service.additional_picture.url }}" alt="Additional Image" style="width: 100%; max-width: 250px; border-radius: 10px; transition: transform 0.3s ease-in-out;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
+        {% endif %}
+
+        <p style="font-size: 16px; line-height: 1.6; text-align: justify; margin-bottom: 20px;">{{ service.long_description }}</p>
+
+        <h3 style="color: #007bff; font-weight: bold; text-align: center;">Points to Remember</h3>
+        <p style="font-size: 16px; line-height: 1.6; text-align: justify; margin-bottom: 20px;">{{ service.points_to_remember }}</p>
+
+        <!-- Display Messages -->
+        {% if messages %}
+        <div style="padding: 15px; border-radius: 5px; margin-bottom: 15px; text-align: center; font-weight: bold;">
+            {% for message in messages %}
+            <p style="padding: 10px; border-radius: 5px; {% if message.tags == 'success' %}background-color: #d4edda; color: #155724;{% elif message.tags == 'error' %}background-color: #f8d7da; color: #721c24;{% endif %}">{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <h3 style="color: #007bff; font-weight: bold; text-align: center;">Request Service</h3>
+        <form method="post" style="margin-top: 20px; text-align: center;">
+            {% csrf_token %}
+            <div style="margin-bottom: 10px;">{{ form.as_p }}</div>
+            <button type="submit" style="background-color: #007bff; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s;" 
+                onmouseover="this.style.backgroundColor='#0056b3'" onmouseout="this.style.backgroundColor='#007bff'">
+                Submit Request
+            </button>
+        </form>
+        
     </div>
-{% endif %}
 
-<h3>Request Service</h3>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Submit Request</button>
-</form>
+</body>
+</html>
+{% endblock %}
