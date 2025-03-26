@@ -1,22 +1,122 @@
 {% extends 'base_admin.html' %}
+{% load static %}  <!-- Load static files -->
+
+{% block title %}Contact Messages{% endblock %}
+
 {% block content %}
-<h2>Contact Messages</h2>
-<table border="1">
-    <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Message</th>
-        <th>Received At</th>
-    </tr>
-    {% for msg in messages %}
-    <tr>
-        <td>{{ msg.name }}</td>
-        <td>{{ msg.email }}</td>
-        <td>{{ msg.phone }}</td>
-        <td>{{ msg.message }}</td>
-        <td>{{ msg.created_at }}</td>
-    </tr>
-    {% endfor %}
-</table>
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: url("{% static 'images/background.jpg' %}") no-repeat center center fixed;
+        background-size: cover;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1100px;
+        margin: 30px auto;
+        background: #ffffff;
+        padding: 25px;
+        box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        position: relative;
+    }
+
+    /* Decorative Image at the Top */
+    .header-image {
+        display: block;
+        margin: 0 auto 20px auto;
+        width: 80px;
+        height: 80px;
+    }
+
+    h2 {
+        text-align: center;
+        color: #444;
+        font-size: 24px;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 14px;
+        text-align: left;
+        border-bottom: 1px solid #eaeaea;
+    }
+
+    th {
+        background: #f6f6f6;
+        font-weight: 600;
+        color: #444;
+        text-transform: uppercase;
+    }
+
+    tr:nth-child(even) {
+        background: #fdfdfd;
+    }
+
+    tr:hover {
+        background: #f8f8f8;
+        transition: 0.3s;
+    }
+
+    .message-column {
+        max-width: 250px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .timestamp {
+        font-size: 13px;
+        color: #777;
+    }
+
+    .no-messages {
+        text-align: center;
+        font-size: 16px;
+        color: #777;
+        padding: 15px;
+    }
+
+</style>
+
+<div class="container">
+    <!-- Fixed Decorative Image -->
+    <img src="{% static 'images/contact.jpg' %}" alt="Messages" class="header-image">
+    
+    <h2>📩 Contact Messages</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Message</th>
+        </tr>
+        {% for msg in messages %}
+        <tr>
+            <td>{{ msg.name }}</td>
+            <td>{{ msg.email }}</td>
+            <td>{{ msg.phone }}</td>
+            <td class="message-column" title="{{ msg.message }}">{{ msg.message }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4" class="no-messages">No messages received yet.</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
 {% endblock %}

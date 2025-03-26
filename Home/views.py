@@ -153,12 +153,12 @@ def mechanic_welcome(request):
 
 
 # Admin Dashboard View
-@login_required
-@user_passes_test(lambda u: u.is_superuser)
-def admin_dashboard(request):
-    customers = Customer.objects.all()
-    mechanics = Mechanic.objects.all()
-    return render(request, 'admin_dashboard.html', {'customers': customers, 'mechanics': mechanics})
+# @login_required
+# @user_passes_test(lambda u: u.is_superuser)
+# def admin_dashboard(request):
+#     customers = Customer.objects.all()
+#     mechanics = Mechanic.objects.all()
+#     return render(request, 'admin_dashboard.html', {'customers': customers, 'mechanics': mechanics})
 
 
 # Approve/Reject Mechanic
@@ -167,7 +167,7 @@ def admin_dashboard(request):
 def admin_dashboard(request):
     customers = Customer.objects.all()
     mechanics = Mechanic.objects.all()
-    return render(request, 'admin_dashboard.html', {'customers': customers, 'mechanics': mechanics})
+    return render(request, 'base_admin.html', {'customers': customers, 'mechanics': mechanics})
 
 
 # Approve/Reject Mechanic
@@ -651,6 +651,11 @@ def fill_feedback(request, service_request_id):
         form = FeedbackForm()
 
     return render(request, "fill_feedback.html", {"form": form, "service_request": service_request})
+def view_byadmin(request, mechanic_id):
+    """ Fetch and display a single mechanic's full profile """
+    mechanic = get_object_or_404(MechanicProfile, id=mechanic_id)
+
+    return render(request, 'view_byadmin.html', {'mechanic': mechanic})
 # def add_status(request):
 #     return render(request,"update_task_status.html")
 # @login_required

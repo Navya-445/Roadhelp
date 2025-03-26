@@ -1,50 +1,151 @@
-
-
-{% extends "base_admin.html" %}  <!-- Extend your base template if you have one -->
-
+{% extends "base_admin.html" %}
 {% block content %}
-<h2>Assigned Task Details - Send Notification</h2>
+{% load static %}  <!-- Load static files -->
 
-<table border="1">
-    <thead>
-        <tr>
-            <th>Mechanic Name</th>
-            <th>Mobile Number</th>
-            <th>Email</th>
-            <th>Service Request</th>
-            <th>Location</th>
-            <th>Customer Name</th>
-            <th>Customer Contact</th>
-            <th>Vehicle Registration</th>
-            <th>WhatsApp Alert</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for task in assigned_tasks %}
-        <tr>
-            <td>{{ task.mechanic.user.username }}</td>
-            <td>{{ task.mechanic.contact_no  }}</td>
-            <td>{{ task.mechanic.email }}</td>
-            <td>{{ task.service_request.service.name }}</td>
-            <td>{{ task.service_request.location }}</td>
-            <td>{{ task.user.username }}</td>
-            <td>{{ task.service_request.contact_number }}</td>
-            <td>{{ task.service_request.vehicle_reg_number }}</td>
-            <td>
-                <a href="https://wa.me/{{ task.mechanic.contact_no }}?text=Hello {{ task.mechanic.user.username }}, you have been assigned a service request. 
-                Customer Name: {{ task.user.username }},
-                Service: {{ task.service_request.service.name }},
-                Location: {{ task.service_request.location }},
-                Contact: {{ task.service_request.contact_number }},
-                Vehicle Reg. No: {{ task.service_request.vehicle_reg_number }}" 
-                target="_blank">
-                    🚀 Send WhatsApp Alert
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<style>
+    /* Page Styling */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: url("{% static 'images/background.jpg' %}") no-repeat center center fixed;
+        background-size: cover;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1000px;
+        margin: 30px auto;
+        background: #ffffff;
+        padding: 25px;
+        box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    /* Heading */
+    h2 {
+        text-align: center;
+        color: #333;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    /* Table Styling */
+    .table-container {
+        width: 80%;
+        margin: 0 auto;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #eaeaea;
+        font-size: 14px;
+    }
+
+    th {
+        background: #f8f8f8;
+        font-weight: 600;
+        color: #444;
+        text-transform: uppercase;
+    }
+
+    tr:nth-child(even) {
+        background: #fdfdfd;
+    }
+
+    tr:hover {
+        background: #f9f9f9;
+        transition: 0.3s;
+    }
+
+    /* WhatsApp Button */
+    .whatsapp-btn {
+        display: inline-block;
+        text-decoration: none;
+        color: white;
+        background: #25D366;
+        padding: 7px 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 13px;
+        transition: 0.3s;
+        text-align: center;
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .whatsapp-btn:hover {
+        background: #1ebe5d;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .whatsapp-btn i {
+        margin-right: 5px;
+    }
+</style>
+
+<div class="container">
+    <h2>🚗 Assigned Task Details - Send Notification</h2>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Mechanic</th>
+                    <th>Mobile</th>
+                    <th>Email</th>
+                    <th>Service</th>
+                    <th>Location</th>
+                    <th>Customer</th>
+                    <th>Contact</th>
+                    <th>Vehicle</th>
+                    <th>WhatsApp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in assigned_tasks %}
+                <tr>
+                    <td>{{ task.mechanic.user.username }}</td>
+                    <td>{{ task.mechanic.contact_no }}</td>
+                    <td>{{ task.mechanic.email }}</td>
+                    <td>{{ task.service_request.service.name }}</td>
+                    <td>{{ task.service_request.location }}</td>
+                    <td>{{ task.user.username }}</td>
+                    <td>{{ task.service_request.contact_number }}</td>
+                    <td>{{ task.service_request.vehicle_reg_number }}</td>
+                    <td>
+                        <a href="https://wa.me/{{ task.mechanic.contact_no }}?text=Hello {{ task.mechanic.user.username }}, you have been assigned a service request. 
+                        Customer Name: {{ task.user.username }},
+                        Service: {{ task.service_request.service.name }},
+                        Location: {{ task.service_request.location }},
+                        Contact: {{ task.service_request.contact_number }},
+                        Vehicle Reg. No: {{ task.service_request.vehicle_reg_number }}" 
+                        target="_blank" class="whatsapp-btn">
+                            <i>📩</i> Send Alert
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" style="text-align: center; color: #777; padding: 15px;">
+                        No assigned tasks available.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 {% endblock %}
-

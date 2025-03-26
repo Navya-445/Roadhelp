@@ -77,5 +77,14 @@ class FeedbackAdmin(admin.ModelAdmin):
     list_display = ('name', 'service_request', 'mechanic', 'overall_experience', 'submitted_at')
     search_fields = ('name', 'service_request__service', 'mechanic__first_name', 'mechanic__last_name')
     list_filter = ('overall_experience', 'submitted_at')
+from django.contrib import admin
+from .models import MechanicAlertStatus
+
+@admin.register(MechanicAlertStatus)
+class MechanicAlertStatusAdmin(admin.ModelAdmin):
+    list_display = ('mechanic', 'alert_status')  # Show mechanic name and alert status
+    list_filter = ('alert_status',)  # Allow filtering by alert status
+    search_fields = ('mechanic__user__username',)  # Search by mechanic's username
+
 
 

@@ -1,50 +1,162 @@
 {% extends 'base_cust.html' %}
 
-{% block title %}Manage mechanics{% endblock %}
+{% block title %}Manage Mechanics{% endblock %}
+
 {% block content %}
 
-<h2>Feedback List</h2>
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+    }
 
-<table border="1" style="width: 60%; border-collapse: collapse; font-size: 14px; text-align: center;">
-    <thead>
-        <tr>
-            <th style="width: 30%;">Service Request</th>
-            <th style="width: 20%;">Mechanic</th>
-            <th style="width: 20%;">Feedback Status</th>
-            <th style="width: 30%;">Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for task in customer_tasks %}
-        <tr>
-            <td>{{ task.service_request.service.name }}</td>
-            <td>{{ task.mechanic.first_name }} {{ task.mechanic.last_name }}</td>
-            <td>
-                {% if task.is_feedback_completed %}
-                    <span style="color: green;">✔ Completed</span>
-                {% else %}
-                    <span style="color: red;">Pending</span>
-                {% endif %}
-            </td>
-            <td>
-                {% if task.is_feedback_completed %}
-                    <button disabled style="background: gray; color: white; border: none; padding: 4px 8px; font-size: 12px;">
-                        Completed
-                    </button>
-                {% else %}
-                    <a href="{% url 'fill_feedback' task.service_request.id %}">
-                        <button style="background: blue; color: white; border: none; padding: 4px 8px; cursor: pointer; font-size: 12px;">
-                            Complete Work
-                        </button>
-                    </a>
-                {% endif %}
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="4" style="text-align: center;">No service requests available for feedback.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    .container {
+        width: 90%;
+        max-width: 1000px;
+        margin: 40px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    h2 {
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 14px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #007bff;
+        color: white;
+        text-transform: uppercase;
+    }
+
+    tr {
+        transition: background 0.3s ease;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+        transform: scale(1.02);
+    }
+
+    .status {
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-weight: bold;
+    }
+
+    .status.completed {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .status.pending {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-completed {
+        background: gray;
+        color: white;
+        cursor: not-allowed;
+    }
+
+    .btn-complete-work {
+        background: #007bff;
+        color: white;
+    }
+
+    .btn-complete-work:hover {
+        background: #0056b3;
+        transform: scale(1.05);
+    }
+
+    @media screen and (max-width: 768px) {
+        .container {
+            width: 95%;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        .btn {
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+    }
+</style>
+
+<div class="container">
+    <h2>🚗 Feedback & Service Completion</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Service Request</th>
+                <th>Mechanic</th>
+                <th>Feedback Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in customer_tasks %}
+            <tr>
+                <td><strong>{{ task.service_request.service.name }}</strong></td>
+                <td>{{ task.mechanic.first_name }} {{ task.mechanic.last_name }}</td>
+                <td>
+                    {% if task.is_feedback_completed %}
+                        <span class="status completed">✔ Completed</span>
+                    {% else %}
+                        <span class="status pending">Pending</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if task.is_feedback_completed %}
+                        <button class="btn btn-completed" disabled>✔ Completed</button>
+                    {% else %}
+                        <a href="{% url 'fill_feedback' task.service_request.id %}">
+                            <button class="btn btn-complete-work">Complete Feddback</button>
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="padding: 20px; font-size: 16px; color: gray;">No service requests available for feedback.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 {% endblock %}

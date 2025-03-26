@@ -1,29 +1,132 @@
 {% extends 'base_admin.html' %}
 {% block content %}
 
-<h2>Assigned Tasks</h2>
+<style>
+    /* Page Container */
+    .tasks-container {
+        width: 90%;
+        max-width: 800px;
+        margin: 30px auto;
+        padding: 20px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    }
 
-<!-- Success and Error Messages -->
-{% if messages %}
-    {% for message in messages %}
-        <p style="color: {% if message.tags == 'success' %}green{% else %}red{% endif %};">
-            {{ message }}
+    /* Heading */
+    h2 {
+        text-align: center;
+        color: #333;
+        font-size: 26px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    /* Alert Messages */
+    .message {
+        text-align: center;
+        padding: 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+    .message.success { background-color: #d4edda; color: #155724; }
+    .message.error { background-color: #f8d7da; color: #721c24; }
+
+    /* Task Card */
+    .task-card {
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        background: #f9f9f9;
+        transition: transform 0.2s ease-in-out;
+        display: flex;
+        flex-direction: column;
+    }
+    .task-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Task Information */
+    .task-card h3 {
+        color: #007bff;
+        margin-bottom: 10px;
+    }
+    .task-card p {
+        margin: 5px 0;
+        font-size: 16px;
+        color: #555;
+    }
+
+    /* Status Badge */
+    .status-badge {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-weight: bold;
+        display: inline-block;
+        font-size: 14px;
+    }
+    .status-completed { background: #28a745; color: white; }
+    .status-progress { background: #ffc107; color: black; }
+    .status-pending { background: #dc3545; color: white; }
+
+    /* Edit Button */
+    .edit-btn {
+        display: block;
+        width: fit-content;
+        padding: 10px 20px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        background: #28a745;
+        color: white;
+        transition: all 0.3s ease-in-out;
+        align-self: flex-end;
+        margin-top: 10px;
+    }
+    .edit-btn:hover {
+        background: #218838;
+        transform: scale(1.05);
+    }
+</style>
+
+<div class="tasks-container">
+    <h2>📌 Assigned Tasks</h2>
+
+    <!-- Success and Error Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <p class="message {% if message.tags == 'success' %}success{% else %}error{% endif %}">
+                {{ message }}
+            </p>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Task List -->
+    {% for task in tasks %}
+    <div class="task-card">
+        <h3>🔧 Service: {{ task.service_request.service.name }}</h3>
+        <p><strong>👤 Customer:</strong> {{ task.user.username }}</p>
+        <p><strong>🛠️ Mechanic:</strong> {{ task.mechanic.first_name }} {{ task.mechanic.last_name }}</p>
+
+        <p><strong>📌 Status:</strong> 
+            <span class="status-badge 
+                {% if task.status == 'Completed' %}status-completed
+                {% elif task.status == 'In Progress' %}status-progress
+                {% else %}status-pending{% endif %}">
+                {{ task.status }}
+            </span>
         </p>
+
+        <a href="{% url 'edit_task_status' task.id %}" class="edit-btn">✏️ Edit Status</a>
+    </div>
     {% endfor %}
-{% endif %}
-
-{% for task in tasks %}
-<div style="border: 1px solid #ccc; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
-    <h3>Service: {{ task.service_request.service.name }}</h3>
-    <p><strong>Customer:</strong> {{ task.user.username }}</p>
-    <p><strong>Mechanic:</strong> {{ task.mechanic.first_name }} {{ task.mechanic.last_name }}</p>
-    {% comment %} <p><strong>Assign Date:</strong> {{ task.assign_date|date:"Y-m-d" }}</p> {% endcomment %}
-    <p><strong>Status:</strong> <span style="color: {% if task.status == 'Completed' %}green{% elif task.status == 'In Progress' %}orange{% else %}red{% endif %};">
-        {{ task.status }}</span>
-    </p>
-
-    <a href="{% url 'edit_task_status' task.id %}"><button>Edit Status</button></a>
 </div>
-{% endfor %}
 
 {% endblock %}

@@ -1,61 +1,79 @@
+{% extends 'base_admin.html' %}
 
+{% block title %}Registered Customers{% endblock %}
 
-{% comment %} <a href="{% url 'view_task_details' task.id %}">📋 View Details</a> {% endcomment %}
-{% comment %} <a href="{% url 'edit_task_status' task.id %}">✏ Edit Status</a> {% endcomment %}
+{% block content %}
 
-<!-- Success and Error Messages -->
-<!-- Success and Error Messages -->
 {% if messages %}
     {% for message in messages %}
-        <p style="color: {% if message.tags == 'success' %}green{% else %}red{% endif %};">
+        <p style="color: {% if message.tags == 'success' %}green{% else %}red{% endif %}; text-align: center; font-weight: bold;">
             {{ message }}
         </p>
     {% endfor %}
 {% endif %}
 
-<h2>Unassigned Service Requests</h2>
-{% for request in service_requests %}
-<div style="border: 1px solid #ccc; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
-    <h3>Service Request: {{ request.service.name }}</h3>
-    <p><strong>Customer:</strong> {{ request.user.username }}</p>
-    <p><strong>Location:</strong> {{ request.location }}</p>
-    <p><strong>City:</strong> {{ request.city }}</p>
+<div style="max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);">
+    
+    <h2 style="text-align: center; color: #2c3e50; font-weight: bold; margin-bottom: 20px;">🛠️ Unassigned Service Requests</h2>
 
-    <form method="post">
-        {% csrf_token %}
-        <input type="hidden" name="service_request_id" value="{{ request.id }}">
+    {% for request in service_requests %}
+    <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #f8f9fc; margin-bottom: 20px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);">
+        <h3 style="color: #34495e;">Service Request: <span style="color: #2980b9;">{{ request.service.name }}</span></h3>
+        <p><strong>👤 Customer:</strong> {{ request.user.username }}</p>
+        <p><strong>📍 Location:</strong> {{ request.location }}</p>
+        <p><strong>🏙️ City:</strong> {{ request.city }}</p>
 
-        <label>Select District:</label>
-        <select name="district" class="district-dropdown" data-request-id="{{ request.id }}">
-            <option value="">Select District</option>
-            {% for district in districts %}
-            <option value="{{ district }}">{{ district }}</option>
-            {% endfor %}
-        </select>
+        <form method="post" style="margin-top: 15px;">
+            {% csrf_token %}
+            <input type="hidden" name="service_request_id" value="{{ request.id }}">
 
-        <label>Select Mechanic:</label>
-        <select name="mechanic" class="mechanic-dropdown" id="mechanic_{{ request.id }}">
-            <option value="">Select Mechanic</option>
-        </select>
+            <label style="font-weight: bold;">📌 Select District:</label>
+            <select name="district" class="district-dropdown" data-request-id="{{ request.id }}" 
+                style="width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px;">
+                <option value="">Select District</option>
+                {% for district in districts %}
+                <option value="{{ district }}">{{ district }}</option>
+                {% endfor %}
+            </select>
 
-        <button type="submit">Assign Task</button>
-    </form>
+            <label style="font-weight: bold;">🛠️ Select Mechanic:</label>
+            <select name="mechanic" class="mechanic-dropdown" id="mechanic_{{ request.id }}" 
+                style="width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px;">
+                <option value="">Select Mechanic</option>
+            </select>
+
+            <button type="submit" style="display: block; width: 100%; background: #27ae60; color: white; border: none; padding: 10px; font-weight: bold; border-radius: 5px; margin-top: 10px; cursor: pointer;">
+                ✅ Assign Task
+            </button>
+        </form>
+    </div>
+    {% empty %}
+    <p style="text-align: center; color: gray; font-size: 16px;">No unassigned service requests available.</p>
+    {% endfor %}
 </div>
-{% empty %}
-<p>No unassigned service requests available.</p>
-{% endfor %}
 
-<h2>Assigned Tasks</h2>
-{% for task in assigned_tasks %}
-<div style="border: 1px solid #ccc; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
-    <h3>Assigned Task: {{ task.service_request.service.name }}</h3>
-    <p><strong>Customer:</strong> {{ task.user.username }}</p>
-    <p><strong>Mechanic:</strong> {{ task.mechanic.first_name }} {{ task.mechanic.last_name }}</p>
-    <p><strong>Status:</strong> {{ task.get_status_display }}</p>
+<div style="max-width: 900px; margin: 30px auto 0; background: white; padding: 20px; border-radius: 12px; box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);">
+    <h2 style="text-align: center; color: #2c3e50; font-weight: bold; margin-bottom: 20px;">📋 Assigned Tasks</h2>
+
+    {% for task in assigned_tasks %}
+    <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #f8f9fc; margin-bottom: 20px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);">
+        <h3 style="color: #34495e;">Assigned Task: <span style="color: #2980b9;">{{ task.service_request.service.name }}</span></h3>
+        <p><strong>👤 Customer:</strong> {{ task.user.username }}</p>
+        <p><strong>🛠️ Mechanic:</strong> {{ task.mechanic.first_name }} {{ task.mechanic.last_name }}</p>
+        <p><strong>📌 Status:</strong> 
+            <span style="padding: 5px 10px; border-radius: 5px; font-weight: bold; color: white; background: 
+                {% if task.get_status_display == 'Pending' %}orange
+                {% elif task.get_status_display == 'Completed' %}green
+                {% else %}red
+                {% endif %};">
+                {{ task.get_status_display }}
+            </span>
+        </p>
+    </div>
+    {% empty %}
+    <p style="text-align: center; color: gray; font-size: 16px;">No assigned tasks yet.</p>
+    {% endfor %}
 </div>
-{% empty %}
-<p>No assigned tasks yet.</p>
-{% endfor %}
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -81,3 +99,5 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 </script>
+
+{% endblock %}

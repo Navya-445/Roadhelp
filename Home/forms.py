@@ -170,6 +170,12 @@ class ContactForm(forms.ModelForm):
     class Meta:
         model = ContactMessage
         fields = ['name', 'email', 'phone', 'message']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your name'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your phone number'}),
+            'message': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter your message'}),
+        }
 
 from django import forms
 from .models import MechanicTaskUpdate, SparePart
@@ -294,4 +300,14 @@ class FeedbackForm(forms.ModelForm):
             "problem_resolution": forms.Select(choices=STAR_CHOICES, attrs={"class": "form-control"}),
             "recommend": forms.RadioSelect(choices=[(True, "Yes"), (False, "No")]),
             "any_suggestions": forms.Textarea(attrs={"rows": 3, "placeholder": "Any suggestions?"}),
+        }
+from django import forms
+from .models import MechanicAlertStatus
+
+class MechanicAlertStatusForm(forms.ModelForm):
+    class Meta:
+        model = MechanicAlertStatus
+        fields = ['alert_status']
+        widgets = {
+            'alert_status': forms.RadioSelect(choices=MechanicAlertStatus.ALERT_STATUS_CHOICES),
         }

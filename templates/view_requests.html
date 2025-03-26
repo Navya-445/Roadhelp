@@ -1,39 +1,59 @@
-<div class="container">
-    <h2>Service Requests</h2>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>User</th>
-                <th>Service Name</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Contact</th>
-                <th>Location</th>
-                <th>Vehicle Reg. No.</th>
-                <th>Status</th>
-                <th>Requested At</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for request in requests %}
-            <tr>
-                <td>{{ request.id }}</td>
-                <td>{{ request.user.username }}</td>
-                <td>{{ request.service.name }}</td>
-                <td>{{ request.name }}</td>
-                <td>{{ request.email }}</td>
-                <td>{{ request.contact_number }}</td>
-                <td>{{ request.location }}</td>
-                <td>{{ request.vehicle_reg_number }}</td>
-                <td>{{ request.status }}</td>
-                <td>{{ request.created_at }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="9" class="text-center">No service requests found.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+{% extends 'base_admin.html' %}
+
+{% block title %}Registered Customers{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Requests</title>
+</head>
+<body style="font-family: 'Poppins', sans-serif; background-color: #f4f4f9; margin: 0; padding: 20px;">
+
+    <div style="max-width: 1200px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);">
+        
+        <h2 style="text-align: center; color: #2c3e50; font-weight: bold; margin-bottom: 20px;">📋 Service Requests</h2>
+        
+        <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.12);">
+            <thead>
+                <tr style="background: #34495e; color: white; text-align: left;">
+                    <th style="padding: 14px; font-size: 14px;">ID</th>
+                    <th style="padding: 14px; font-size: 14px;">User</th>
+                    <th style="padding: 14px; font-size: 14px;">Service Name</th>
+                    <th style="padding: 14px; font-size: 14px;">Name</th>
+                    <th style="padding: 14px; font-size: 14px;">Email</th>
+                    <th style="padding: 14px; font-size: 14px;">Contact</th>
+                    <th style="padding: 14px; font-size: 14px;">Location</th>
+                    <th style="padding: 14px; font-size: 14px;">Vehicle Reg. No.</th>
+                    {% comment %} <th style="padding: 14px; font-size: 14px;">Status</th> {% endcomment %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in requests %}
+                <tr style="border-bottom: 1px solid #ddd; background: {% cycle '#f9fcff' '#eef2f7' %}; transition: 0.3s;">
+                    <td style="padding: 12px; font-size: 13px; color: #2c3e50;">{{ request.id }}</td>
+                    <td style="padding: 12px; font-size: 13px; color: #2c3e50;">{{ request.user.username }}</td>
+                    <td style="padding: 12px; font-size: 13px; color: #2c3e50;">{{ request.service.name }}</td>
+                    <td style="padding: 12px; font-size: 13px; color: #2c3e50;">{{ request.name }}</td>
+                    <td style="padding: 12px; font-size: 13px; color: #2980b9;">{{ request.email }}</td>
+                    <td style="padding: 12px; font-size: 13px; color: #2c3e50;">{{ request.contact_number }}</td>
+                    <td style="padding: 12px; font-size: 13px; color: #2c3e50;">{{ request.location }}</td>
+                    <td style="padding: 12px; font-size: 13px; color: #2c3e50;">{{ request.vehicle_reg_number }}</td>
+                    {% comment %} <td style="padding: 12px; font-weight: bold; font-size: 13px; text-align: center; border-radius: 5px; background: {% if request.status == 'Pending' %}'#ffcc80'{% elif request.status == 'Completed' %}'#81c784'{% else %}'#e57373'{% endif %}; color: white;">
+                        {{ request.status }}
+                    </td> {% endcomment %}
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" style="text-align: center; padding: 20px; font-size: 15px; color: gray;">No service requests found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
+{% endblock %}

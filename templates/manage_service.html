@@ -1,30 +1,67 @@
-<h3>Add New Service</h3>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Add Service</button>
-</form>
+{% extends 'base_admin.html' %}
 
-<!-- Display success/error messages -->
-{% if messages %}
-    <div>
-        {% for message in messages %}
-            <p class="{{ message.tags }}">{{ message }}</p>
-        {% endfor %}
-    </div>
-{% endif %}
+{% block title %}Manage mechanics{% endblock %}
 
-<h3>Existing Services</h3>
-{% for service in services %}
-    <div>
-        <h4>{{ service.name }}</h4>
-        <img src="{{ service.picture.url }}" width="100" alt="Service Image">
-        <form method="post" onsubmit="return confirm('Are you sure you want to delete this service?');">
-            {% csrf_token %}
-            <input type="hidden" name="service_id" value="{{ service.id }}">
-            <button type="submit" name="delete">Delete</button>
-        </form>
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Services</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f8f9fa; margin: 0; padding: 20px;">
+
+    <div style="max-width: 900px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+        
+        <!-- Add New Service Form -->
+        <div style="background: #f0f0f0; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h2>Add New Service</h2>
+            <form method="post" enctype="multipart/form-data" style="display: flex; flex-direction: column;">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" style="background: #28a745; color: white; padding: 10px 15px; border: none; cursor: pointer; font-size: 16px; border-radius: 5px; transition: 0.3s;">
+                    Add Service
+                </button>
+            </form>
+
+            <!-- Display success/error messages -->
+            {% if messages %}
+                <div style="margin-top: 10px; padding: 10px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 5px;">
+                    {% for message in messages %}
+                        <p class="{{ message.tags }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Existing Services Section -->
+        <h2 style="text-align: center; margin: 20px 0;">Existing Services</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+            {% for service in services %}
+                <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1); text-align: center; transition: 0.3s;">
+                    <h3>{{ service.name }}</h3>
+                    <img src="{{ service.picture.url }}" alt="Service Image" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 10px;">
+                    <form method="post" style="margin-top: 10px;" onsubmit="return confirmDelete();">
+                        {% csrf_token %}
+                        <input type="hidden" name="service_id" value="{{ service.id }}">
+                        <button type="submit" name="delete" style="background: #dc3545; color: white; padding: 8px 12px; border: none; cursor: pointer; font-size: 14px; border-radius: 5px; transition: 0.3s;">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            {% empty %}
+                <p style="text-align: center; font-size: 16px; color: gray; margin-top: 20px;">No services available.</p>
+            {% endfor %}
+        </div>
     </div>
-{% empty %}
-    <p>No services available.</p>
-{% endfor %}
+
+    <script>
+        function confirmDelete() {
+            return confirm("Are you sure you want to delete this service?");
+        }
+    </script>
+
+</body>
+</html>
+{% endblock %}

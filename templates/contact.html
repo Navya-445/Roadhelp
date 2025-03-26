@@ -96,51 +96,53 @@
     </div>
   </header>
   <!-- end header section -->
+  {% load static %}
 
   <section class="contact_section layout_padding">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form_container">
-                    <div class="heading_container">
-                        <h2>Get In Touch</h2>
-                    </div>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <div>
-                            {{ form.name }}
-                        </div>
-                        <div>
-                            {{ form.email }}
-                        </div>
-                        <div>
-                            {{ form.phone }}
-                        </div>
-                        <div>
-                            {{ form.message }}
-                        </div>
-                        <div class="btn_box">
-                            <button type="submit">SEND</button>
-                        </div>
-                    </form>
-                    
-                    {% if messages %}
-                        <ul class="messages">
-                            {% for message in messages %}
-                                <li>{{ message }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="img-box">
-                    <img src="{% static 'images/contact-img.png' %}" alt="Contact Image">
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+      <div class="container">
+          <div class="row">
+              <div class="col-md-6">
+                  <div class="form_container">
+                      <div class="heading_container">
+                          <h2>Get In Touch</h2>
+                      </div>
+                      <form method="POST">
+                          {% csrf_token %}
+                          <div>
+                              {{ form.name }}
+                          </div>
+                          <div>
+                              {{ form.email }}
+                          </div>
+                          <div>
+                              {{ form.phone }}
+                          </div>
+                          <div>
+                              {{ form.message }}
+                          </div>
+                          <div class="btn_box">
+                              <button type="submit">SEND</button>
+                          </div>
+                      </form>
+  
+                      {% if messages %}
+                          <ul class="messages">
+                              {% for message in messages %}
+                                  <li>{{ message }}</li>
+                              {% endfor %}
+                          </ul>
+                      {% endif %}
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="img-box">
+                      <img src="{% static 'images/contact-img.png' %}" alt="Contact Image">
+                  </div>
+              </div>
+          </div>
+      </div>
+  </section>
+  
 <!-- End Contact Section -->
   <!-- end contact section -->
 

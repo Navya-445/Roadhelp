@@ -1,0 +1,85 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Mechanic Full Profile{% endblock %}
+
+{% block content %}
+<style>
+    .profile-container {
+        width: 70%;
+        margin: auto;
+        background: #ffffff;
+        padding: 25px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+        border-radius: 12px;
+        font-family: 'Arial', sans-serif;
+        color: #333;
+    }
+    .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 15px;
+    }
+    .profile-header img {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #007BFF;
+    }
+    .profile-header h2 {
+        color: #222;
+        font-size: 22px;
+    }
+    .profile-details {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+    .detail-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f9f9f9;
+        padding: 10px 15px;
+        border-radius: 8px;
+    }
+    .label {
+        font-weight: bold;
+        color: #444;
+    }
+    .value {
+        color: #555;
+        font-size: 14px;
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-header">
+        {% if mechanic.profile_picture %}
+            <img src="{{ mechanic.profile_picture.url }}" alt="Profile Picture">
+        {% else %}
+            <img src="https://via.placeholder.com/110" alt="No Image">
+        {% endif %}
+        <h2>{{ mechanic.first_name }} {{ mechanic.last_name }}</h2>
+    </div>
+
+    <div class="profile-details">
+        <div class="detail-row"><span class="label">Email:</span> <span class="value">{{ mechanic.email }}</span></div>
+        <div class="detail-row"><span class="label">Date of Birth:</span> <span class="value">{{ mechanic.date_of_birth }}</span></div>
+        <div class="detail-row"><span class="label">Gender:</span> <span class="value">{{ mechanic.gender }}</span></div>
+        <div class="detail-row"><span class="label">Contact No:</span> <span class="value">{{ mechanic.contact_no }}</span></div>
+        <div class="detail-row"><span class="label">Alternate Contact:</span> <span class="value">{{ mechanic.alternate_contact }}</span></div>
+        <div class="detail-row"><span class="label">Aadhar ID:</span> <span class="value">{{ mechanic.aadhar_id }}</span></div>
+        <div class="detail-row"><span class="label">Experience:</span> <span class="value">{{ mechanic.experience }} years</span></div>
+        <div class="detail-row">
+            <span class="label">Address:</span>
+            <span class="value">{{ mechanic.address }}, {{ mechanic.city }}, {{ mechanic.state }}, {{ mechanic.district }}</span>
+        </div>
+        <div class="detail-row"><span class="label">Specialization:</span> <span class="value">{{ mechanic.specialization.name }}</span></div>
+    </div>
+</div>
+
+{% endblock %}

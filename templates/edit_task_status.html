@@ -1,31 +1,112 @@
 {% extends 'base_admin.html' %}
 {% block content %}
 
-<h2>Edit Task Status</h2>
+<style>
+    /* Page Container */
+    .edit-task-container {
+        width: 90%;
+        max-width: 600px;
+        margin: 30px auto;
+        padding: 20px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
 
-<!-- Success and Error Messages -->
-{% if messages %}
-    {% for message in messages %}
-        <p style="color: {% if message.tags == 'success' %}green{% else %}red{% endif %};">
-            {{ message }}
-        </p>
-    {% endfor %}
-{% endif %}
+    /* Heading */
+    h2 {
+        color: #333;
+        font-size: 26px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
 
-<form method="post">
-    {% csrf_token %}
-    
-    <label>Service: {{ task.service_request.service.name }}</label><br>
-    <label>Mechanic: {{ task.mechanic.first_name }} {{ task.mechanic.last_name }}</label><br>
+    /* Alert Messages */
+    .message {
+        padding: 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+    .message.success { background-color: #d4edda; color: #155724; }
+    .message.error { background-color: #f8d7da; color: #721c24; }
 
-    <label>Update Status:</label>
-    <select name="status">
-        <option value="Pending" {% if task.status == 'Pending' %}selected{% endif %}>Pending</option>
-        <option value="In Progress" {% if task.status == 'In Progress' %}selected{% endif %}>In Progress</option>
-        <option value="Completed" {% if task.status == 'Completed' %}selected{% endif %}>Completed</option>
-    </select>
+    /* Form Labels */
+    label {
+        font-weight: bold;
+        display: block;
+        margin-top: 15px;
+        font-size: 16px;
+        color: #555;
+        text-align: left;
+    }
 
-    <button type="submit">Update Status</button>
-</form>
+    /* Input Fields & Select Dropdown */
+    select {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 16px;
+        background-color: #f8f8f8;
+    }
+    select:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+
+    /* Submit Button */
+    .submit-btn {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 6px;
+        background-color: #28a745;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: all 0.3s ease-in-out;
+    }
+    .submit-btn:hover {
+        background-color: #218838;
+        transform: scale(1.05);
+    }
+</style>
+
+<div class="edit-task-container">
+    <h2>✏️ Edit Task Status</h2>
+
+    <!-- Success and Error Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <p class="message {% if message.tags == 'success' %}success{% else %}error{% endif %}">
+                {{ message }}
+            </p>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <label>🔧 Service:</label>
+        <p>{{ task.service_request.service.name }}</p>
+
+        <label>🛠️ Mechanic:</label>
+        <p>{{ task.mechanic.first_name }} {{ task.mechanic.last_name }}</p>
+
+        <label>📌 Update Status:</label>
+        <select name="status">
+            <option value="Pending" {% if task.status == 'Pending' %}selected{% endif %}>Pending</option>
+            <option value="In Progress" {% if task.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+            <option value="Completed" {% if task.status == 'Completed' %}selected{% endif %}>Completed</option>
+        </select>
+
+        <button type="submit" class="submit-btn">✅ Update Status</button>
+    </form>
+</div>
 
 {% endblock %}

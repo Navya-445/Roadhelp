@@ -243,3 +243,13 @@ class Feedback(models.Model):
 
     def __str__(self):
         return f"Feedback by {self.name} for {self.service_request.service}"
+class MechanicAlertStatus(models.Model):
+    mechanic = models.OneToOneField(Mechanic, on_delete=models.CASCADE, related_name='alert_status')
+    ALERT_STATUS_CHOICES = [
+        ('done', '✅ Done'),
+        ('not_done', '❌ Not Done'),
+    ]
+    alert_status = models.CharField(max_length=10, choices=ALERT_STATUS_CHOICES, default='not_done')
+
+    def __str__(self):
+        return f"{self.mechanic.user.username} - {self.get_alert_status_display()}"

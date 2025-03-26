@@ -1,6 +1,97 @@
-<h2>Mechanic Details</h2>
+{% extends 'base_admin.html' %}
 
-<table border="1">
+{% block title %}Registered Customers{% endblock %}
+
+{% block content %}
+<style>
+    /* Table Styling */
+    .mechanic-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .mechanic-table th, .mechanic-table td {
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+        font-size: 14px;
+    }
+
+    .mechanic-table th {
+        background: linear-gradient(135deg, #007BFF, #0056b3);
+        color: white;
+        font-size: 16px;
+        text-transform: uppercase;
+    }
+
+    .mechanic-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .mechanic-table tr:hover {
+        background-color: #eef5ff;
+        transition: 0.3s;
+    }
+
+    /* Profile Image Styling */
+    .profile-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #007BFF;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .profile-img:hover {
+        transform: scale(1.1);
+    }
+
+    /* Button Styling */
+    .view-btn {
+        padding: 8px 12px;
+        background: linear-gradient(135deg, #28a745, #218838);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+
+    .view-btn:hover {
+        background: linear-gradient(135deg, #218838, #1e7e34);
+        transform: scale(1.05);
+    }
+
+    /* Header Section */
+    .page-header {
+        font-size: 26px;
+        color: #333;
+        margin-bottom: 20px;
+        font-weight: bold;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    /* Responsive Design */
+    @media screen and (max-width: 768px) {
+        .mechanic-table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+    }
+</style>
+
+<h2 class="page-header">Mechanic Details</h2>
+
+<table class="mechanic-table">
     <tr>
         <th>Profile Picture</th>
         <th>Name</th>
@@ -15,7 +106,7 @@
     <tr>
         <td>
             {% if mechanic.profile_picture %}
-                <img src="{{ mechanic.profile_picture.url }}" alt="Profile Picture" width="50px">
+                <img src="{{ mechanic.profile_picture.url }}" alt="Profile Picture" class="profile-img">
             {% else %}
                 No Image
             {% endif %}
@@ -26,8 +117,11 @@
         <td>{{ mechanic.experience }} years</td>
         <td>{{ mechanic.specialization.name }}</td>
         <td>
-            <a href="{% url 'view_profile' %}?id={{ mechanic.id }}"><button>View Profile</button></a>
+            <a href="{% url 'view_byadmin' mechanic.id %}">
+                <button class="view-btn">View Profile</button>
+            </a>
         </td>
     </tr>
     {% endfor %}
 </table>
+{% endblock %}
