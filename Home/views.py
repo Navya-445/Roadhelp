@@ -656,6 +656,73 @@ def view_byadmin(request, mechanic_id):
     mechanic = get_object_or_404(MechanicProfile, id=mechanic_id)
 
     return render(request, 'view_byadmin.html', {'mechanic': mechanic})
+
+import razorpay
+from django.conf import settings
+from django.shortcuts import render
+from .models import ServiceRequest, PriceList
+
+def payment_page(request):
+    """ Fetch service requests and corresponding prices for the logged-in user and generate Razorpay orders """
+    
+    customer_tasks = ServiceRequest.objects.filter(user=request.user).select_related('service')
+
+    client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+    customer_tasks_with_prices = []
+    
+    for task in customer_tasks:
+        price_entry = PriceList.objects.filter(service=task.service).first()
+        amount_inr = price_entry.amount_inr if price_entry else None  # Ensure the amount is valid
+
+        if amount_inr:
+            # Convert amount to paisa (Razorpay requires the amount in paisa)
+            amount_paisa = int(amount_inr * 100)
+
+            # Create a Razorpay order
+            order_data = {
+                "amount": amount_paisa,
+                "currency": "INR",
+                "payment_capture": 1,  # Auto capture payment
+            }
+            order = client.order.create(order_data)
+
+            customer_tasks_with_prices.append({
+                'task': task,
+                'service': task.service,
+                'amount_inr': amount_inr,
+                'order_id': order['id'],  # Send Razorpay order ID to frontend
+            })
+
+    return render(request, 'payment_page.html', {
+        'customer_tasks': customer_tasks_with_prices,
+        'RAZORPAY_KEY_ID': settings.RAZORPAY_KEY_ID,  # Pass key to frontend
+    })
+from django.shortcuts import render
+
+def payment_success(request):
+    return render(request, 'payment_success.html')
+
+# from .models import ServiceRequest, PriceList
+# def payment_page(request):
+#     """ Fetch service requests and corresponding prices for the logged-in user """
+#     customer_tasks = ServiceRequest.objects.filter(user=request.user).select_related('service')
+
+#     # Create a list to store tasks with their corresponding prices
+#     customer_tasks_with_prices = []
+
+#     for task in customer_tasks:
+#         price_entry = PriceList.objects.filter(service=task.service).first()  # Fetch the first price entry for the service
+#         amount_inr = price_entry.amount_inr if price_entry else "Not Available"
+
+#         customer_tasks_with_prices.append({
+#             'task': task,
+#             'service': task.service,
+#             'amount_inr': amount_inr
+#         })
+
+#     return render(request, 'payment_page.html', {'customer_tasks': customer_tasks_with_prices})
+
 # def add_status(request):
 #     return render(request,"update_task_status.html")
 # @login_required

@@ -253,3 +253,10 @@ class MechanicAlertStatus(models.Model):
 
     def __str__(self):
         return f"{self.mechanic.user.username} - {self.get_alert_status_display()}"
+    
+class PriceList(models.Model):
+    service = models.ForeignKey(ServiceProvided, on_delete=models.CASCADE, related_name="prices")
+    amount_inr = models.DecimalField(max_digits=10, decimal_places=2, help_text="Enter price in INR")
+
+    def __str__(self):
+        return f"{self.service.name} - ₹{self.amount_inr}"

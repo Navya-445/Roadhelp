@@ -85,6 +85,10 @@ class MechanicAlertStatusAdmin(admin.ModelAdmin):
     list_display = ('mechanic', 'alert_status')  # Show mechanic name and alert status
     list_filter = ('alert_status',)  # Allow filtering by alert status
     search_fields = ('mechanic__user__username',)  # Search by mechanic's username
-
-
+from .models import ServiceProvided, PriceList
+@admin.register(PriceList)
+class PriceListAdmin(admin.ModelAdmin):
+    list_display = ('service', 'amount_inr')
+    search_fields = ('service__name',)
+    list_filter = ('service',)
 

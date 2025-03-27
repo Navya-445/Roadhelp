@@ -131,3 +131,7 @@ STATICFILES_DIRS=[
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+RAZORPAY_KEY_ID = "rzp_test_d5VCv4MOwkIpcU"
+RAZORPAY_KEY_SECRET = "OXxDDHSLPDiM9yvqbd1SAFdN"

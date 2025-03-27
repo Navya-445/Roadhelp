@@ -1,0 +1,57 @@
+{% block content %}
+<h2>My Payments</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Service Name</th>
+            <th>Amount (INR)</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in customer_tasks %}
+            <tr>
+                <td>{{ item.service.name }}</td>
+                <td>
+                    ₹{{ item.amount_inr }}
+                </td>
+                <td>
+                    {% if item.order_id %}
+                        <button onclick="payWithRazorpay('{{ item.order_id }}', '{{ item.amount_inr }}')" class="btn btn-primary">Pay</button>
+                    {% else %}
+                        Not Available
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="3">No pending payments.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Razorpay Payment Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+function payWithRazorpay(orderId, amount) {
+    var options = {
+        "key": "{{ RAZORPAY_KEY_ID }}",  // Razorpay Key ID
+        "amount": amount * 100,  // Convert amount to paisa
+        "currency": "INR",
+        "name": "My Service",
+        "description": "Payment for service",
+        "order_id": orderId,
+        "handler": function (response) {
+            alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+            window.location.href = "/payment-success/";  // Redirect after success
+        },
+        "theme": {
+            "color": "#3399cc"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
+}
+</script>
+{% endblock %}
