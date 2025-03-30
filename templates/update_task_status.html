@@ -1,4 +1,49 @@
+{% extends "base_mech.html" %}
+{% block content %}
+<h2 style="text-align: center; color: #004080; font-size: 24px; font-weight: bold; margin-bottom: 20px;">
+    🛠️ Update Task Status
+</h2>
 
+<!-- Display Success Message -->
+{% if messages %}
+    <ul style="list-style: none; padding: 0; text-align: center;">
+        {% for message in messages %}
+            <li style="background: #d4edda; color: #155724; padding: 10px; margin: 10px auto; width: 50%; border-radius: 5px;">
+                {{ message }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<!-- Form Container -->
+<div style="max-width: 400px; margin: auto; padding: 20px; background: #ffffff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); text-align: center;">
+    <form method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+        {% csrf_token %}
+        
+        <label for="status" style="font-size: 16px; font-weight: bold; color: #004080;">Select Status:</label>
+        
+        <select name="status" id="status" style="padding: 10px; border: 2px solid #004080; border-radius: 5px; font-size: 16px; cursor: pointer;">
+            <option value="Pending" {% if form.status.value == "Pending" %}selected{% endif %}>⏳ Pending</option>
+            <option value="In Progress" {% if form.status.value == "In Progress" %}selected{% endif %}>⚙️ In Progress</option>
+            <option value="Completed" {% if form.status.value == "Completed" %}selected{% endif %}>✅ Completed</option>
+        </select>
+        
+        <button type="submit" style="background: #ff9800; color: white; padding: 10px 15px; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s;">
+            ✅ Update Status
+        </button>
+    </form>
+</div>
+
+<!-- Back to Tasks -->
+<div style="text-align: center; margin-top: 20px;">
+    <a href="{% url 'mechanic_assigned_tasks' %}" style="background: #004080; color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; transition: background 0.3s;">
+        ⬅ Back to Tasks
+    </a>
+</div>
+
+{% endblock %}
+
+{% comment %} 
 
 
 <h2>Update Task Status</h2>
@@ -20,4 +65,4 @@
     <button type="submit">Update Status</button>
 </form>
 
-<a href="{% url 'mechanic_assigned_tasks' %}">Back to Tasks</a>
+<a href="{% url 'mechanic_assigned_tasks' %}">Back to Tasks</a> {% endcomment %}

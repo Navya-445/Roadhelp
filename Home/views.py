@@ -150,6 +150,13 @@ def customer_welcome(request):
 @login_required
 def mechanic_welcome(request):
     return render(request, 'mechanic_welcome.html')
+# @login_required
+# def mechanic_welcome(request):
+#     return render(request, 'base_mech.html')
+@login_required
+def  backdashboardmech(request):
+    return render(request, 'back_mechdash.html')
+
 
 
 # Admin Dashboard View
@@ -701,7 +708,14 @@ def payment_page(request):
 from django.shortcuts import render
 
 def payment_success(request):
-    return render(request, 'payment_success.html')
+    return render(request, 'payment_success.html')@login_required
+def view_pastwork(request):
+    """View to display past work details sorted by completed date"""
+    mechanic = request.user.mechanicprofile  # Get the logged-in mechanic
+    past_works = MechanicDetailsFill.objects.filter(mechanic=mechanic).order_by('-completed_date')
+
+    return render(request, 'work_history.html', {'past_works': past_works})
+
 
 # from .models import ServiceRequest, PriceList
 # def payment_page(request):

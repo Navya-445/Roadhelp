@@ -1,4 +1,179 @@
-<h2>Assigned Tasks</h2>
+{% extends "base_mech.html" %}
+{% block content %}
+
+
+
+<style>
+    /* Page Styling */
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f6f9;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1000px;
+        margin: 30px auto;
+        padding: 20px;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        text-align: center;
+    }
+
+    /* Header with Icon */
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #004080; /* Deep Blue */
+        padding-bottom: 10px;
+        border-bottom: 3px solid #004080;
+    }
+
+    .header-icon {
+        font-size: 30px;
+        color: #004080;
+    }
+
+    /* Success Message */
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        padding: 10px;
+        border-radius: 5px;
+        margin: 15px 0;
+        font-weight: bold;
+    }
+
+    /* Task List Grid */
+    .tasks-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .task-card {
+        background: #e8f5e9; /* Soft Green */
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-left: 6px solid #004080;
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+        text-align: left;
+    }
+
+    .task-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .task-card h3 {
+        color: #004080;
+        margin-bottom: 8px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .task-card p {
+        font-size: 14px;
+        color: #333;
+        margin: 5px 0;
+    }
+
+    /* Update Button */
+    .update-btn {
+        display: inline-flex;
+        align-items: center;
+        background: #ff9800;
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: bold;
+        transition: background 0.2s;
+    }
+
+    .update-btn:hover {
+        background: #e68900;
+    }
+
+    .update-btn i {
+        margin-right: 5px;
+    }
+
+    /* No Task Message */
+    .no-tasks {
+        color: #d9534f;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+
+    /* Back to Dashboard */
+    .back-dashboard {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 15px;
+        background: #004080;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background 0.3s;
+    }
+
+    .back-dashboard:hover {
+        background: #002d5a;
+    }
+</style>
+
+<div class="container">
+    <div class="header">
+        <span class="header-icon">🛠️</span> Assigned Tasks
+    </div>
+
+    <!-- Success Message Display -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert-success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {% if assigned_tasks %}
+        <div class="tasks-container">
+            {% for task in assigned_tasks %}
+            <div class="task-card">
+                <h3>{{ task.service_request.service.name }}</h3>
+                <p><strong>Customer:</strong> {{ task.service_request.name }}</p>
+                <p><strong>Location:</strong> {{ task.service_request.location }}, {{ task.service_request.city }}, {{ task.service_request.state }}</p>
+                {% comment %} <p><strong>Email:</strong> {{ task.service_request.email }}</p>
+                <p><strong>Contact:</strong> {{ task.service_request.contact_number }}</p> {% endcomment %}
+                <p><strong>Vehicle Reg:</strong> {{ task.service_request.vehicle_reg_number }}</p>
+                <p><strong>Status:</strong> {{ task.latest_status }}</p>
+                <a href="{% url 'update_mechanic_task_status' task.id %}" class="update-btn">
+                    <i class="fas fa-edit"></i> Update Status
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="no-tasks">No tasks assigned.</p>
+    {% endif %}
+
+    {% comment %} <a href="{% url 'mechanic_welcome' %}" class="back-dashboard">⬅ Back to Dashboard</a> {% endcomment %}
+</div>
+
+{% endblock %}
+
+{% comment %} <h2>Assigned Tasks</h2>
 
 <!-- Success Message Display -->
 {% if messages %}
@@ -24,4 +199,4 @@
     {% endfor %}
 
 </table>
-<a href ="{% url 'mechanic_welcome' %}">Back dashboard</a>
+<a href ="{% url 'mechanic_welcome' %}">Back dashboard</a> {% endcomment %}

@@ -1,4 +1,68 @@
+{% extends 'base_mech.html' %}
 
+{% block title %} Mechanics{% endblock %}
+
+{% block content %}
+<h2 style="text-align: center; color: #004080; font-size: 26px; font-weight: bold; margin-bottom: 20px;">
+    🛠 Assigned Tasks
+</h2>
+
+{% if assigned_tasks %}
+    <div style="max-width: 900px; margin: auto; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        {% for task in assigned_tasks %}
+            <div style="display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; padding: 15px; margin-bottom: 15px; border-radius: 8px; border-left: 6px solid {% if task.mechanic_fill_details.exists %}#28a745{% else %}#dc3545{% endif %}; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                
+                <!-- Service Request Info -->
+                <div>
+                    <p style="margin: 5px 0; font-size: 18px; font-weight: bold; color: #333;">
+                        🔧 {{ task.service_request }}
+                    </p>
+                    <p style="margin: 5px 0; font-size: 14px; color: #666;">
+                        Status: 
+                        {% if task.mechanic_fill_details.exists %}
+                            <span style="color: green; font-weight: bold;">✔ Completed</span>
+                        {% else %}
+                            <span style="color: red; font-weight: bold;">⏳ Pending</span>
+                        {% endif %}
+                    </p>
+                </div>
+
+                <!-- Action Button -->
+                <div>
+                    {% if task.mechanic_fill_details.exists %}
+                        <button disabled style="background: gray; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-size: 14px;">
+                            ✅ Completed
+                        </button>
+                    {% else %}
+                        <a href="{% url 'fill_mechanic_details' task.id %}" style="text-decoration: none;">
+                            <button style="background: #007bff; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-size: 14px; cursor: pointer; transition: 0.3s;">
+                                ✔ Complete Work
+                            </button>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p style="text-align: center; font-size: 18px; color: #777;">No assigned tasks found.</p>
+{% endif %}
+
+{% comment %} <!-- Back to Dashboard Button -->
+<div style="text-align: center; margin-top: 20px;">
+    <a href="{% url 'mech_dash' %}" style="background: #004080; color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; transition: background 0.3s;">
+        ⬅ Back to Dashboard
+    </a>
+</div> {% endcomment %}
+
+{% endblock %}
+{% comment %} 
+
+{% extends 'base_mech.html' %}
+
+{% block title %} Mechanics{% endblock %}
+
+{% block content %}
 <h2>🛠 Assigned Tasks</h2>
 
 {% if assigned_tasks %}
@@ -39,6 +103,8 @@
 {% else %}
     <p>No assigned tasks found.</p>
 {% endif %}
+<a href="{% url 'mech_dash' %}"><i class="fas fa-sign-out-alt"></i> Back to dashboard</a>
+{% endblock %}
 
 
-
+ {% endcomment %}

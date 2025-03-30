@@ -112,7 +112,7 @@
     {% for task in tasks %}
     <div class="task-card">
         <h3>🔧 Service: {{ task.service_request.service.name }}</h3>
-        <p><strong>👤 Customer:</strong> {{ task.user.username }}</p>
+        <p><strong>👤 Customer:</strong> {{ task.service_request.name }}</p>
         <p><strong>🛠️ Mechanic:</strong> {{ task.mechanic.first_name }} {{ task.mechanic.last_name }}</p>
 
         <p><strong>📌 Status:</strong> 

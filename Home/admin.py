@@ -78,7 +78,7 @@ class FeedbackAdmin(admin.ModelAdmin):
     search_fields = ('name', 'service_request__service', 'mechanic__first_name', 'mechanic__last_name')
     list_filter = ('overall_experience', 'submitted_at')
 from django.contrib import admin
-from .models import MechanicAlertStatus
+from .models import MechanicAlertStatus,PaymentInfo
 
 @admin.register(MechanicAlertStatus)
 class MechanicAlertStatusAdmin(admin.ModelAdmin):
@@ -91,4 +91,15 @@ class PriceListAdmin(admin.ModelAdmin):
     list_display = ('service', 'amount_inr')
     search_fields = ('service__name',)
     list_filter = ('service',)
+@admin.register(PaymentInfo)
+class PaymentInfoAdmin(admin.ModelAdmin):
+    list_display = ('customer_name', 'service_request', 'amount', 'is_paid', 'created_at')
+    list_filter = ('is_paid', 'created_at')
+    search_fields = ('customer_name', 'mobile_number', 'order_id', 'payment_id')
+    readonly_fields = ('created_at', 'order_id', 'payment_id')
 
+    def get_readonly_fields(self, request, obj=None):
+        """ Make certain fields read-only after payment is completed. """
+        if obj and obj.is_paid:
+            return self.readonly_fields + ('amount', 'is_paid')
+        return self.readonly_fields

@@ -1,1 +1,56 @@
-hi
+{% extends 'base_mech.html' %}
+
+{% block title %} Work History {% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+    <h2 style="text-align: center; color: #004080; margin-bottom: 20px;">🔧 Work History</h2>
+
+    {% if past_works %}
+        {% for work in past_works %}
+            <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 20px; background: #f9f9f9;">
+                <h3 style="color: #004080; margin-bottom: 10px;">🛠️ {{ work.service_request }}</h3>
+                <p><strong>📅 Completed Date:</strong> {{ work.completed_date|date:"d M Y" }}</p>
+                <p><strong>⏱️ Reached Time:</strong> {{ work.reached_time }}</p>
+                <p><strong>✅ Finished Time:</strong> {{ work.finished_time }}</p>
+                
+                <div style="display: flex; gap: 20px; align-items: center;">
+                    <div>
+                        <p><strong>📷 Before Service:</strong></p>
+                        {% if work.before_image %}
+                            <img src="{{ work.before_image.url }}" alt="Before Image" style="width: 150px; height: 100px; border-radius: 5px; border: 1px solid #ccc;">
+                        {% else %}
+                            <p style="color: gray;">No Image</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <p><strong>📸 After Service:</strong></p>
+                        {% if work.after_image %}
+                            <img src="{{ work.after_image.url }}" alt="After Image" style="width: 150px; height: 100px; border-radius: 5px; border: 1px solid #ccc;">
+                        {% else %}
+                            <p style="color: gray;">No Image</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% comment %} <p><strong>🔩 Used Spare Parts:</strong> 
+                    {% if work.used_spare_parts.all %}
+                        {{ work.used_spare_parts.all|join:", " }}
+                    {% else %}
+                        None
+                    {% endif %}
+                </p> {% endcomment %}
+
+                <p><strong>📝 Mechanic Notes:</strong> {{ work.mechanic_notes }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p style="text-align: center; color: red;">❌ No past work details found.</p>
+    {% endif %}
+
+    {% comment %} <p style="text-align: center; margin-top: 20px;">
+        <a href="{% url 'mechanic_dashboard' %}" style="color: white; background: #004080; padding: 10px 15px; border-radius: 5px; text-decoration: none; display: inline-block;">🔙 Back to Dashboard</a>
+    </p> {% endcomment %}
+</div>
+{% endblock %}

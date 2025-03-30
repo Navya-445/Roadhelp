@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanic Dashboard</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            overflow-x: hidden;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: #1e3a5f;
+            position: fixed;
+            top: 0;
+            left: -250px;
+            padding-top: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+            color: white;
+            transition: left 0.3s ease;
+        }
+        .sidebar img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+            display: block;
+            margin: 10px auto;
+        }
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .sidebar a i {
+            margin-right: 10px;
+        }
+        .sidebar a:hover {
+            background: #294a70;
+        }
+        .menu-btn {
+            font-size: 24px;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: none;
+            border: none;
+            color: #1e3a5f;
+        }
+        .main-content {
+            margin-left: 0;
+            padding: 40px;
+            transition: margin-left 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <button class="menu-btn" onclick="toggleSidebar()">&#9776;</button>
+    <div class="sidebar" id="sidebar">
+        <div style="text-align:center;">
+            <img src="{% if request.user.mechanicprofile.profile_picture %}{{ request.user.mechanicprofile.profile_picture.url }}{% else %}/static/images/default-profile.png{% endif %}" alt="Profile Image" class="profile-icon">
+            <h3>{{ request.user.first_name }} {{ request.user.last_name }}</h3>
+        </div>
+       
+
+         <a href="{% url 'my_appointments' %}"><i class="fas fa-calendar"></i> My Appointments</a>
+        <a href="{% url 'mechanic_assigned_tasks' %}"><i class="fas fa-tasks"></i> My Tasks</a>
+        <a href="{% url 'mechanic_work_details' %}"><i class="fas fa-edit"></i> Fill Work Details</a>
+        <a href="{% url 'view_pastwork' %}"><i class="fas fa-tasks"></i> My past works</a>
+        <a href="{% url 'mech_dash' %}"><i class="fas fa-user"></i> Back To Dashboar</a>
+
+        {% comment %} <a href="#"><i class="fas fa-file-alt"></i> Reports</a> 
+        <a href="{% url 'mechaniclogout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a> {% endcomment %}
+    </div>
+    <div class="main-content" id="main-content">
+        {% block content %}
+        {% endblock %}
+    </div>
+    
+    <script>
+        function toggleSidebar() {
+            let sidebar = document.getElementById("sidebar");
+            let mainContent = document.getElementById("main-content");
+            if (sidebar.style.left === "-250px") {
+                sidebar.style.left = "0";
+                mainContent.style.marginLeft = "250px";
+            } else {
+                sidebar.style.left = "-250px";
+                mainContent.style.marginLeft = "0";
+            }
+        }
+    </script>
+</body>
+</html>

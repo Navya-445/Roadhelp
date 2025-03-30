@@ -1,0 +1,140 @@
+{% comment %} {% extends 'base_admin.html' %}
+
+{% block title %}Work History Report{% endblock %}
+
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: #f4f7f6;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .mechanic-section {
+        margin-bottom: 30px;
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 8px;
+        background: #f9f9f9;
+    }
+
+    .mechanic-name {
+        font-size: 18px;
+        font-weight: bold;
+        color: #007BFF;
+        margin-bottom: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background: #007BFF;
+        color: white;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .no-records {
+        text-align: center;
+        padding: 20px;
+        font-size: 18px;
+        color: #666;
+    }
+
+</style>
+
+<div class="container">
+    <h2>Mechanic Work Report</h2>
+
+    {% if work_history_by_mechanic %}
+        {% for mechanic, past_works in work_history_by_mechanic.items %}
+            <div class="mechanic-section">
+                <div class="mechanic-name">
+                    {{ mechanic.user.get_full_name }} ({{ mechanic.user.username }})
+                </div>
+
+                {% if past_works %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Work Description</th>
+                                <th>Completed Date</th>
+                                <th>Location</th>
+                                <th>Before Image</th>
+                                <th>After Image</th>
+                                <th>Spare Parts Used</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for work in past_works %}
+                            <tr>
+                                <td>{{ work.work_description }}</td>
+                                <td>{{ work.completed_date|date:"F d, Y" }}</td>
+                                <td>{{ work.location }}</td>
+                                <td>
+                                    {% if work.before_image %}
+                                        <img src="{{ work.before_image.url }}" width="80" height="80" style="border-radius: 5px;">
+                                    {% else %}
+                                        No Image
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if work.after_image %}
+                                        <img src="{{ work.after_image.url }}" width="80" height="80" style="border-radius: 5px;">
+                                    {% else %}
+                                        No Image
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% for part in work.used_spare_parts.all %}
+                                        {{ part.name }}{% if not forloop.last %}, {% endif %}
+                                    {% empty %}
+                                        None
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="no-records">No work history available for this mechanic.</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="no-records">No work history records found.</p>
+    {% endif %}
+</div>
+
+
+
+
+{% endblock %} {% endcomment %}

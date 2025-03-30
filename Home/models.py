@@ -260,3 +260,18 @@ class PriceList(models.Model):
 
     def __str__(self):
         return f"{self.service.name} - ₹{self.amount_inr}"
+class PaymentInfo(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # User making the payment
+    service_request = models.ForeignKey("ServiceRequest", on_delete=models.CASCADE)  # Related service request
+    price = models.ForeignKey("PriceList", on_delete=models.CASCADE)  # Associated price
+    customer_name = models.CharField(max_length=255)
+    mobile_number = models.CharField(max_length=10)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)  # Payment amount
+    order_id = models.CharField(max_length=100, unique=True, null=True, blank=True)  # Razorpay Order ID
+    payment_id = models.CharField(max_length=100, null=True, blank=True)  # Razorpay Payment ID
+    is_paid = models.BooleanField(default=False)  # Payment status
+    created_at = models.DateTimeField(auto_now_add=True)  # Timestamp
+
+    def __str__(self):
+        status = "Paid" if self.is_paid else "Pending"
+        return f"{self.customer_name} - ₹{self.amount} - {status}"

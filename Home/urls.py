@@ -53,8 +53,12 @@ urlpatterns = [
     path('feedback/', views.feedback_list, name='feedback_list'),
     path('feedback/fill/<int:service_request_id>/', views.fill_feedback, name='fill_feedback'),
     path('mechanic-details/<int:mechanic_id>/', views.view_byadmin, name='view_byadmin'),
-     path('my-payments/', views.payment_page, name='payment_page'),
-      path('payment-success/', views.payment_success, name='payment_success'),]
+    path('my-payments/', views.payment_page, name='payment_page'),
+    path('payment-success/', views.payment_success, name='payment_success'),
+    path('back-mechdash/', views.backdashboardmech, name='mech_dash'),
+    path('past-work/', views.view_pastwork, name='view_pastwork'),
+    #  path('admin/work-history/', views.view_workhistbyadmin, name='view_workhistbyadmin'),
+]
     # path('mechanic-success/', views.success_reg, name='mechanic_success'),
     # path('task-status', views.add_status, name='update_task_status'),
     # path('mechanic/appointments/', views.assigned_tasks, name='mechanic_assigned_tasks'),

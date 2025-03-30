@@ -1,4 +1,57 @@
-<h2>Profile Details</h2>
+{% extends 'base_mech.html' %}
+
+{% block title %} Work History {% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Details</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+
+    <div style="max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        
+        <h2 style="text-align: center; color: #333;">Profile Details</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <p style="color: green; text-align: center;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <div style="text-align: center;">
+            <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" 
+                 style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #007BFF;">
+        </div>
+
+        <div style="margin-top: 20px; line-height: 1.6;">
+            <p><strong>Name:</strong> {{ profile.first_name }} {{ profile.last_name }}</p>
+            <p><strong>Email:</strong> {{ profile.email }}</p>
+            <p><strong>Mobile:</strong> {{ profile.contact_no }}</p>
+            <p><strong>Aadhar ID:</strong> {{ profile.aadhar_id }}</p>
+            <p><strong>Date of Birth:</strong> {{ profile.date_of_birth }}</p>
+            <p><strong>Gender:</strong> {{ profile.get_gender_display }}</p>
+            <p><strong>Experience:</strong> {{ profile.experience }} years</p>
+            <p><strong>Specialization:</strong> {{ profile.specialization.name }}</p>
+            <p><strong>Address:</strong> {{ profile.address }}, {{ profile.city }}, {{ profile.state }}, {{ profile.district }}</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'edit_profile' %}" 
+               style="display: inline-block; background: #007BFF; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold;">
+               Edit Profile
+            </a>
+        </div>
+
+    </div>
+
+</body>
+</html>
+{% endblock %}
+{% comment %} <h2>Profile Details</h2>
 
 {% if messages %}
   {% for message in messages %}
@@ -17,4 +70,4 @@
 <p><strong>Specialization:</strong> {{ profile.specialization.name }}</p>
 <p><strong>Address:</strong> {{ profile.address }}, {{ profile.city }}, {{ profile.state }}, {{ profile.district }}</p>
 
-<a href="{% url 'edit_profile' %}"><button>Edit Profile</button></a>
+<a href="{% url 'edit_profile' %}"><button>Edit Profile</button></a> {% endcomment %}
