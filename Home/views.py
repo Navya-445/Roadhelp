@@ -224,15 +224,15 @@ def manage_mechanic(request):
 def adminlogout(request):
     """Log out the user and redirect to the homepage."""
     logout(request)  # Log out the current user
-    return redirect('registers')  # Redirect to the homepage
+    return redirect('home')  # Redirect to the homepage
 def customerlogout(request):
     """Log out the user and redirect to the homepage."""
     logout(request)  # Log out the current user
-    return redirect('registers')  # Redirect to the homepage
+    return redirect('home')  # Redirect to the homepage
 def mechaniclogout(request):
     """Log out the user and redirect to the homepage."""
     logout(request)  # Log out the current user
-    return redirect('registers')  # Redirect to the homepage
+    return redirect('home')  # Redirect to the homepage
 def registered_customers(request):
     customers = Customer.objects.all()  # Assuming `Customer` is the model
     return render(request, 'registered_customers.html', {'customers': customers})
@@ -244,10 +244,10 @@ def service(request):
 def why(request):
     return render(request, 'why.html')
 
-def customerlogout(request):
-    """Log out the user and redirect to the homepage."""
-    logout(request)  # Log out the current user
-    return redirect('registers') 
+# def customerlogout(request):
+#     """Log out the user and redirect to the homepage."""
+#     logout(request)  # Log out the current user
+#     return redirect('registers') 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages

@@ -1,0 +1,125 @@
+/* Global Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    font: 700 62.5% 'Montserrat', sans-serif;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+a {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 1.6rem;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #0056b3;
+}
+
+h1 { font-size: 3rem; color: #222; }
+h2 { font-size: 2.5rem; color: #444; }
+h3 { font-size: 2.2rem; color: #666; }
+
+/* Header */
+#header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background: rgba(0, 0, 0, 0.8);
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    height: 4rem;
+    margin-right: 1rem;
+}
+
+.logo-text {
+    font-size: 2rem;
+    color: #fff;
+}
+
+.menu-toggle {
+    color: #fff;
+    font-size: 2rem;
+}
+
+.nav-bar-wrapper {
+    display: flex;
+}
+
+.menu-wrapper {
+    display: flex;
+    list-style: none;
+}
+
+.menu-wrapper li {
+    margin: 0 1rem;
+}
+
+.nav-link {
+    font-size: 1.8rem;
+    color: #fff;
+    padding: 1rem;
+}
+
+/* CTA Section */
+.cta-img {
+    background: url("{% static 'images/landpage.jpg' %}") center/cover no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100vh;
+    width: 100%;
+}
+
+.cta-wrapper {
+    max-width: 60rem;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 1rem;
+}
+
+.cta-wrapper h1 {
+    color: #ff6600;
+    font-size: 3rem;
+}
+
+.cta-wrapper h2 {
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+.cta-wrapper a {
+    display: inline-block;
+    background-color: #ff6600;
+    color: white;
+    font-size: 1.8rem;
+    padding: 1.5rem 2rem;
+    border-radius: 3rem;
+    margin-top: 2rem;
+    transition: background 0.3s;
+}
+
+.cta-wrapper a:hover {
+    background-color: #cc5500;
+}
