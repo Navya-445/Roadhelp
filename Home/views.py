@@ -679,112 +679,85 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import CustPayment
 from .forms import CustPaymentUpdateForm
-
-def admin_paydetails(request):
-    """View to list CustPayment records from the admin interface."""
-    
-    # Get all CustPayment records, ensuring no duplicate records
-    payments = CustPayment.objects.all()
-    
-    if request.method == 'POST':
-        # Handle form submission
-        form = CustPaymentUpdateForm(request.POST)
-        
-        if form.is_valid():
-            # Get the payment ID manually from the POST data
-            payment_id = request.POST.get('payment_id')  # Retrieve payment_id from the form
-            
-            if payment_id:
-                payment = get_object_or_404(CustPayment, id=payment_id)
-                
-                # Update the payment status
-                payment.is_paid = form.cleaned_data['is_paid']
-                payment.save()
-                
-                # Display success message
-                messages.success(request, 'Payment status updated successfully!')
-            else:
-                messages.error(request, 'Payment ID not found!')
-            
-            return redirect('admin_paydetails')  # Redirect to the same page after update
-    else:
-        form = CustPaymentUpdateForm()
-
-    # Pass payments and form to the template for rendering
-    return render(request, 'admin_paydetails.html', {
-        'payments': payments,
-        'form': form,
-    })
-
-
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
+from django.contrib import messages
 import razorpay
 from .models import ServiceRequest, PriceList, CustPayment
+from .forms import CustPaymentUpdateForm
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
+from .models import ServiceRequest, CustPayment
 
-def payment_page(request):
-    """ Fetch service requests and corresponding prices for the logged-in user and generate Razorpay orders """
+
+def admin_paymentdetails(request):
+    if request.method == 'POST':
+        # Handle payment status updates
+        payment_id = request.POST.get('payment_id')
+        new_status = request.POST.get('is_paid') == 'on'
+        
+        try:
+            payment = CustPayment.objects.get(id=payment_id)
+            if new_status and not payment.is_paid:
+                # If marking as paid, remove the corresponding service request
+                ServiceRequest.objects.filter(
+                    user__username=payment.cust_name,
+                    service__name=payment.service_request_name
+                ).delete()
+            
+            payment.is_paid = new_status
+            payment.save()
+            messages.success(request, 'Payment status updated successfully!')
+        except Exception as e:
+            messages.error(request, f'Error updating payment: {str(e)}')
     
-    # Fetch service requests for the logged-in user
+    # Get all payment records
+    payments = CustPayment.objects.all().order_by('-is_paid', 'cust_name')
+    return render(request, 'admin_paydetails.html', {'payments': payments})
+@login_required
+def payment_page(request):
+    """Fetch service requests and generate Razorpay orders, creating payment records"""
     customer_tasks = ServiceRequest.objects.filter(user=request.user).select_related('service')
-
-    # Initialize Razorpay client
     client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-
+    
     customer_tasks_with_prices = []
     
     for task in customer_tasks:
         price_entry = PriceList.objects.filter(service=task.service).first()
-        amount_inr = price_entry.amount_inr if price_entry else None  # Ensure the amount is valid
+        amount_inr = price_entry.amount_inr if price_entry else None
 
         if amount_inr:
-            # Convert amount to paisa (Razorpay requires the amount in paisa)
             amount_paisa = int(amount_inr * 100)
+            order_data = {
+                "amount": amount_paisa,
+                "currency": "INR",
+                "payment_capture": 1,
+            }
+            order = client.order.create(order_data)
 
-            # Check if payment already exists for this service request
-            existing_payment = CustPayment.objects.filter(service_request_name=task.service.name, cust_name=request.user.username).first()
-
-            if not existing_payment:  # Only create a new payment entry if it doesn't already exist
-                # Create a Razorpay order
-                order_data = {
-                    "amount": amount_paisa,
-                    "currency": "INR",
-                    "payment_capture": 1,  # Auto capture payment
+            # Create or update payment record
+            CustPayment.objects.update_or_create(
+                service_request_name=task.service.name,
+                cust_name=request.user.username,
+                defaults={
+                    'amount_paid': amount_inr,
+                    'order_id': order['id'],
+                    'is_paid': False
                 }
-                order = client.order.create(order_data)
+            )
 
-                if order:
-                    # Create the CustPayment entry and save payment details
-                    cust_payment = CustPayment(
-                        service_request_name=task.service.name,  # Name of the service request
-                        cust_name=request.user.username,  # Customer's name
-                        amount_paid=amount_inr,  # Amount to be paid
-                        is_paid=False,  # Initially set to False, will be updated later
-                        order_id=order['id'],  # Store Razorpay Order ID
-                    )
-                    cust_payment.save()
+            customer_tasks_with_prices.append({
+                'task': task,
+                'service': task.service,
+                'amount_inr': amount_inr,
+                'order_id': order['id'],
+            })
 
-                    customer_tasks_with_prices.append({
-                        'task': task,
-                        'service': task.service,
-                        'amount_inr': amount_inr,
-                        'order_id': order['id'],  # Send Razorpay order ID to frontend
-                        'is_paid': False  # Default payment status
-                    })
-                else:
-                    # Handle case where Razorpay order creation fails
-                    messages.error(request, "Failed to create Razorpay order for service request.")
-            else:
-                # If payment already exists, don't create a new order
-                customer_tasks_with_prices.append({
-                    'task': task,
-                    'service': task.service,
-                    'amount_inr': amount_inr,
-                    'order_id': existing_payment.order_id,  # Use existing order ID
-                    'is_paid': existing_payment.is_paid  # Fetch the payment status
-                })
-
-    return render(request, 'payment_page.html', {'customer_tasks': customer_tasks_with_prices})
+    return render(request, 'payment_page.html', {
+        'customer_tasks': customer_tasks_with_prices,
+        'RAZORPAY_KEY_ID': settings.RAZORPAY_KEY_ID,
+    })
 
 # def payment_page(request):
 #     """ Fetch service requests and corresponding prices for the logged-in user and generate Razorpay orders """
@@ -822,10 +795,18 @@ def payment_page(request):
 #         'customer_tasks': customer_tasks_with_prices,
 #         'RAZORPAY_KEY_ID': settings.RAZORPAY_KEY_ID,  # Pass key to frontend
 #     })
-# from django.shortcuts import render
+from django.shortcuts import render
 @login_required
 def payment_success(request):
-    return render(request, 'payment_success.html')
+    payment_id = request.GET.get('payment_id')
+    order_id = request.GET.get('order_id')
+    
+    return render(request, 'payment_success.html', {
+        'payment_id': payment_id,
+        'order_id': order_id
+    })
+# def payment_success(request):
+#     return render(request, 'payment_success.html')
 def view_pastwork(request):
     """View to display past work details sorted by completed date"""
     mechanic = request.user.mechanicprofile  # Get the logged-in mechanic

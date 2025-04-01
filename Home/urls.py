@@ -55,11 +55,11 @@ urlpatterns = [
     path('mechanic-details/<int:mechanic_id>/', views.view_byadmin, name='view_byadmin'),
     path('my-payments/', views.payment_page, name='payment_page'),
     path('payment-success/', views.payment_success, name='payment_success'),
-    path('pay-admin/', views.admin_paydetails, name='admin_paydetails'),
+    path('pay-adminments/', views.admin_paymentdetails, name='admin_paymentdetails'),
     path('back-mechdash/', views.backdashboardmech, name='mech_dash'),
-    path('past-work/', views.view_pastwork, name='view_pastwork'),
+    path('past-work/', views.view_pastwork, name='view_pastwork'),]
     #  path('admin/work-history/', views.view_workhistbyadmin, name='view_workhistbyadmin'),
-]
+
     # path('mechanic-success/', views.success_reg, name='mechanic_success'),
     # path('task-status', views.add_status, name='update_task_status'),
     # path('mechanic/appointments/', views.assigned_tasks, name='mechanic_assigned_tasks'),

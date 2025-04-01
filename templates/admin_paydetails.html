@@ -1,58 +1,122 @@
 {% extends 'base_admin.html' %}
+{% load static %}
 
 {% block content %}
-  <h2>Payment Details</h2>
-  
-  <!-- Display messages if any -->
-  {% if messages %}
-    <div class="alert alert-success">
-      {% for message in messages %}
-        <p>{{ message }}</p>
-      {% endfor %}
+<div class="container mt-5">
+    <h2 class="mb-4">Payment Details</h2>
+    
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Service Request</th>
+                    <th>Customer</th>
+                    <th>Amount Paid</th>
+                    <th>Order ID</th>
+                    <th>Payment Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td>{{ payment.service_request_name }}</td>
+                    <td>{{ payment.cust_name }}</td>
+                    <td>₹{{ payment.amount_paid }}</td>
+                    <td>{{ payment.order_id|default:"-" }}</td>
+                    <td>
+                        {% if payment.is_paid %}
+                            <span class="badge badge-success">Paid</span>
+                        {% else %}
+                            <span class="badge badge-warning">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="post" action="{% url 'admin_paymentdetails' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="payment_id" value="{{ payment.id }}">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="is_paid" 
+                                       id="paid_{{ payment.id }}" {% if payment.is_paid %}checked{% endif %}
+                                       onchange="this.form.submit()">
+                                <label class="form-check-label" for="paid_{{ payment.id }}"></label>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No payment records found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-  {% endif %}
+</div>
+{% endblock %}
+{% comment %} {% extends 'base_admin.html' %}
 
-  <table class="table">
-    <thead>
+{% block content %}
+<h2>Payment Details</h2>
+
+<!-- Display success messages if any -->
+{% if messages %}
+  <div class="alert alert-success">
+    {% for message in messages %}
+      <p>{{ message }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<table class="table table-bordered">
+  <thead class="thead-dark">
+    <tr>
+      <th>Service Request</th>
+      <th>Customer Name</th>
+      <th>Amount Paid</th>
+      <th>Paid Status</th>
+      <th>Update Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for payment in payments %}
       <tr>
-        <th>Service Request</th>
-        <th>Customer Name</th>
-        <th>Amount Paid</th>
-        <th>Paid Status</th>
-        <th>Update Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for payment in payments %}
-        <tr>
-          <td>{{ payment.service_request_name }}</td>
-          <td>{{ payment.cust_name }}</td>
-          <td>₹{{ payment.amount_paid }}</td>
-          <td>
-            <!-- Display "Paid" or "Not Paid" based on the payment status -->
-            {% if payment.is_paid %}
-              <span class="badge bg-success">Paid</span>
-            {% else %}
-              <span class="badge bg-danger">Not Paid</span>
-            {% endif %}
-          </td>
-          <td>
-            <form method="POST">
-              {% csrf_token %}
-              <!-- Hidden field for payment ID -->
+        <td>{{ payment.service_request_name }}</td>
+        <td>{{ payment.cust_name }}</td>
+        <td>₹{{ payment.amount_paid }}</td>
+        <td>
+          {% if payment.is_paid %}
+            <span class="badge bg-success">Paid</span>
+          {% else %}
+            <span class="badge bg-danger">Not Paid</span>
+          {% endif %}
+        </td>
+        <td>
+          <form method="POST" action="{% url 'update_payment_status' payment.id %}">
+            {% csrf_token %}
+            
+            <div class="form-group form-check">
               <input type="hidden" name="payment_id" value="{{ payment.id }}">
               
-              <!-- Render the 'is_paid' field from the form as a checkbox -->
-              <div class="form-group">
-                <label for="is_paid_{{ payment.id }}">Update Paid Status</label>
-                <input type="checkbox" name="is_paid" id="is_paid_{{ payment.id }}" {% if payment.is_paid %}checked{% endif %}>
-              </div>
+              <input type="checkbox" class="form-check-input" name="is_paid" id="is_paid_{{ payment.id }}" {% if payment.is_paid %}checked{% endif %}>
+              <label class="form-check-label" for="is_paid_{{ payment.id }}">Mark as Paid</label>
+            </div>
 
-              <button type="submit" class="btn btn-primary">Update Status</button>
-            </form>
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-{% endblock %}
+            <button type="submit" class="btn btn-primary btn-sm">Update Status</button>
+          </form>
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="5" class="text-center">No payment records available.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %} {% endcomment %}

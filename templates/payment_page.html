@@ -1,133 +1,10 @@
-{% extends 'base_cust.html' %}
-
 {% block content %}
-<style>
-    .payment-container {
-        max-width: 800px;
-        margin: auto;
-        padding: 20px;
-        background: #f8f9fa;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    h2 {
-        text-align: center;
-        color: #333;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-    th, td {
-        border: 1px solid #ddd;
-        padding: 10px;
-        text-align: center;
-    }
-    th {
-        background: #007bff;
-        color: white;
-    }
-    .paid {
-        color: green;
-        font-weight: bold;
-    }
-    .pending {
-        color: red;
-        font-weight: bold;
-    }
-    .btn {
-        padding: 8px 12px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-    .btn-primary {
-        background: #007bff;
-        color: white;
-    }
-    .btn-success {
-        background: green;
-        color: white;
-    }
-    .btn:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-    }
-</style>
-
-<div class="payment-container">
-    <h2>My Payments</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Service Name</th>
-                <th>Amount (INR)</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in customer_tasks %}
-                <tr>
-                    <td>{{ item.service.name }}</td>
-                    <td>₹{{ item.amount_inr }}</td>
-                    <td>
-                        {% if item.is_paid %}
-                            <span class="paid">Paid</span>
-                        {% else %}
-                            <span class="pending">Pending</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if not item.is_paid and item.order_id %}
-                            <button onclick="payWithRazorpay('{{ item.order_id }}', '{{ item.amount_inr }}')" class="btn btn-primary">Pay</button>
-                        {% else %}
-                            <button disabled class="btn btn-success">Paid</button>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="4">No pending payments.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-<!-- Razorpay Payment Script -->
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-function payWithRazorpay(orderId, amount) {
-    var options = {
-        "key": "{{ RAZORPAY_KEY_ID }}",  // Razorpay Key ID
-        "amount": amount * 100,  // Convert amount to paisa
-        "currency": "INR",
-        "name": "My Service",
-        "description": "Payment for service",
-        "order_id": orderId,
-        "handler": function (response) {
-            alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
-            window.location.href = "/payment-success/";  // Redirect after success
-        },
-        "theme": {
-            "color": "#3399cc"
-        }
-    };
-    var rzp1 = new Razorpay(options);
-    rzp1.open();
-}
-</script>
-{% endblock %}
-{% comment %} {% block content %}
 <h2>My Payments</h2>
 <table border="1">
     <thead>
         <tr>
             <th>Service Name</th>
             <th>Amount (INR)</th>
-            <th>Status</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -137,23 +14,19 @@ function payWithRazorpay(orderId, amount) {
                 <td>{{ item.service.name }}</td>
                 <td>₹{{ item.amount_inr }}</td>
                 <td>
-                    {% if item.is_paid %}
-                        <span style="color: green; font-weight: bold;">Paid</span>
+                    {% if item.order_id %}
+                        <button onclick="payWithRazorpay('{{ item.order_id }}', '{{ item.amount_inr }}', '{{ item.service.name }}')" 
+                                class="btn btn-primary">
+                            Pay
+                        </button>
                     {% else %}
-                        <span style="color: red; font-weight: bold;">Pending</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if not item.is_paid and item.order_id %}
-                        <button onclick="payWithRazorpay('{{ item.order_id }}', '{{ item.amount_inr }}')" class="btn btn-primary">Pay</button>
-                    {% else %}
-                        <button disabled class="btn btn-success">Paid</button>
+                        Not Available
                     {% endif %}
                 </td>
             </tr>
         {% empty %}
             <tr>
-                <td colspan="4">No pending payments.</td>
+                <td colspan="3">No pending payments.</td>
             </tr>
         {% endfor %}
     </tbody>
@@ -162,28 +35,29 @@ function payWithRazorpay(orderId, amount) {
 <!-- Razorpay Payment Script -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-function payWithRazorpay(orderId, amount) {
-    var options = {
-        "key": "{{ RAZORPAY_KEY_ID }}",  // Razorpay Key ID
-        "amount": amount * 100,  // Convert amount to paisa
-        "currency": "INR",
-        "name": "My Service",
-        "description": "Payment for service",
-        "order_id": orderId,
-        "handler": function (response) {
-            alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
-            window.location.href = "/payment-success/";  // Redirect after success
-        },
-        "theme": {
-            "color": "#3399cc"
-        }
-    };
-    var rzp1 = new Razorpay(options);
-    rzp1.open();
-}
+    function payWithRazorpay(orderId, amount, serviceName) {
+        var options = {
+            "key": "{{ RAZORPAY_KEY_ID }}",
+            "amount": amount * 100,
+            "currency": "INR",
+            "name": "Service Payment",
+            "description": "Payment for " + serviceName,
+            "order_id": orderId,
+            "handler": function (response) {
+                // Redirect directly to success page with payment details as URL parameters
+                window.location.href = "{% url 'payment_success' %}?payment_id=" + 
+                                     encodeURIComponent(response.razorpay_payment_id) + 
+                                     "&order_id=" + encodeURIComponent(response.razorpay_order_id);
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+    }
 </script>
-{% endblock %} {% endcomment %}
-
+{% endblock %}
 
 
 {% comment %} {% block content %}
@@ -242,4 +116,4 @@ function payWithRazorpay(orderId, amount) {
     rzp1.open();
 }
 </script>
-{% endblock %} {% endcomment %}
+{% endblock %}   {% endcomment %}
