@@ -689,76 +689,74 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import ServiceRequest, CustPayment
-
-
 def admin_paymentdetails(request):
     if request.method == 'POST':
-        # Handle payment status updates
         payment_id = request.POST.get('payment_id')
         new_status = request.POST.get('is_paid') == 'on'
         
         try:
             payment = CustPayment.objects.get(id=payment_id)
-            if new_status and not payment.is_paid:
-                # If marking as paid, remove the corresponding service request
-                ServiceRequest.objects.filter(
-                    user__username=payment.cust_name,
-                    service__name=payment.service_request_name
-                ).delete()
-            
-            payment.is_paid = new_status
-            payment.save()
-            messages.success(request, 'Payment status updated successfully!')
+            if payment.is_paid != new_status:
+                payment.is_paid = new_status
+                payment.save()
+                messages.success(request, f'Payment status for {payment.cust_name} updated to {"Paid" if new_status else "Unpaid"}')
         except Exception as e:
             messages.error(request, f'Error updating payment: {str(e)}')
     
-    # Get all payment records
     payments = CustPayment.objects.all().order_by('-is_paid', 'cust_name')
-    return render(request, 'admin_paydetails.html', {'payments': payments})
+    return render(request, 'admin_paydetails.html', {
+        'payments': payments,
+        'page_title': 'Payment Management'
+    })
 @login_required
 def payment_page(request):
-    """Fetch service requests and generate Razorpay orders, creating payment records"""
-    customer_tasks = ServiceRequest.objects.filter(user=request.user).select_related('service')
-    client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+    # Get unpaid service requests with their payment status
+    service_requests = ServiceRequest.objects.filter(
+        user=request.user
+    ).select_related('service')
     
-    customer_tasks_with_prices = []
+    payment_data = []
     
-    for task in customer_tasks:
-        price_entry = PriceList.objects.filter(service=task.service).first()
-        amount_inr = price_entry.amount_inr if price_entry else None
-
-        if amount_inr:
-            amount_paisa = int(amount_inr * 100)
+    for sr in service_requests:
+        payment = CustPayment.objects.filter(
+            service_request_name=sr.service.name,
+            cust_name=request.user.username
+        ).first()
+        
+        price = PriceList.objects.filter(service=sr.service).first()
+        amount = price.amount_inr if price else 0
+        
+        # Create payment record if doesn't exist
+        if not payment and amount > 0:
+            client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
             order_data = {
-                "amount": amount_paisa,
+                "amount": int(amount * 100),
                 "currency": "INR",
                 "payment_capture": 1,
             }
             order = client.order.create(order_data)
-
-            # Create or update payment record
-            CustPayment.objects.update_or_create(
-                service_request_name=task.service.name,
+            
+            payment = CustPayment.objects.create(
+                service_request_name=sr.service.name,
                 cust_name=request.user.username,
-                defaults={
-                    'amount_paid': amount_inr,
-                    'order_id': order['id'],
-                    'is_paid': False
-                }
+                amount_paid=amount,
+                order_id=order['id'],
+                is_paid=False
             )
-
-            customer_tasks_with_prices.append({
-                'task': task,
-                'service': task.service,
-                'amount_inr': amount_inr,
-                'order_id': order['id'],
-            })
+        
+        payment_data.append({
+            'service': sr.service,
+            'amount_inr': amount,
+            'order_id': payment.order_id if payment else None,
+            'is_paid': payment.is_paid if payment else False,
+            'payment_exists': payment is not None,
+        })
 
     return render(request, 'payment_page.html', {
-        'customer_tasks': customer_tasks_with_prices,
+        'customer_tasks': payment_data,
         'RAZORPAY_KEY_ID': settings.RAZORPAY_KEY_ID,
+        'page_title': 'My Payments'
     })
-
 # def payment_page(request):
 #     """ Fetch service requests and corresponding prices for the logged-in user and generate Razorpay orders """
     
@@ -797,16 +795,10 @@ def payment_page(request):
 #     })
 from django.shortcuts import render
 @login_required
+
+ 
 def payment_success(request):
-    payment_id = request.GET.get('payment_id')
-    order_id = request.GET.get('order_id')
-    
-    return render(request, 'payment_success.html', {
-        'payment_id': payment_id,
-        'order_id': order_id
-    })
-# def payment_success(request):
-#     return render(request, 'payment_success.html')
+    return render(request, 'payment_success.html')
 def view_pastwork(request):
     """View to display past work details sorted by completed date"""
     mechanic = request.user.mechanicprofile  # Get the logged-in mechanic
