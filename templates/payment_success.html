@@ -1,5 +1,12 @@
 {% block content %}
+<h2>Payment Successful!</h2>
+<p>Your payment has been successfully processed. Thank you for your purchase.</p>
+<a href="{% url 'payment_page' %}">Go Back to Payments</a>
+{% endblock %}
+
+
+{% comment %} {% block content %}
 <h2>Payment Successful</h2>
 <p>Your payment was processed successfully. Thank you!</p>
 <a href="/">Go back to Home</a>
-{% endblock %}
+{% endblock %} {% endcomment %}

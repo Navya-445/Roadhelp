@@ -103,3 +103,19 @@ class PaymentInfoAdmin(admin.ModelAdmin):
         if obj and obj.is_paid:
             return self.readonly_fields + ('amount', 'is_paid')
         return self.readonly_fields
+from django.contrib import admin
+from .models import CustPayment
+
+from django.contrib import admin
+from .models import CustPayment
+
+@admin.register(CustPayment)
+class CustPaymentAdmin(admin.ModelAdmin):
+    list_display = ("service_request_name", "cust_name", "amount_paid", "is_paid", "order_id")  # Added order_id
+    list_filter = ("is_paid",)  # Filter by payment status
+    search_fields = ("cust_name", "service_request_name", "order_id")  # Added order_id to search
+    actions = ["mark_as_paid"]
+
+    def mark_as_paid(self, request, queryset):
+        queryset.update(is_paid=True)
+    mark_as_paid.short_description = "Mark selected payments as Paid"

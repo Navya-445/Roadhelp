@@ -311,3 +311,13 @@ class MechanicAlertStatusForm(forms.ModelForm):
         widgets = {
             'alert_status': forms.RadioSelect(choices=MechanicAlertStatus.ALERT_STATUS_CHOICES),
         }
+from django import forms
+from .models import CustPayment
+
+class CustPaymentUpdateForm(forms.ModelForm):
+    class Meta:
+        model = CustPayment
+        fields = ['is_paid']  # Only show the 'is_paid' field in the form
+        widgets = {
+            'is_paid': forms.CheckboxInput(attrs={'class': 'form-control'}),
+        }

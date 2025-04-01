@@ -1,7 +1,6 @@
 {% extends "base_mech.html" %}
 {% block content %}
 
-
 <style>
     /* Page Styling */
     body {
@@ -72,16 +71,25 @@
         margin: 4px 0;
     }
 
-    /* Email Styling */
-    .email-container {
+    /* WhatsApp Contact Button */
+    .whatsapp-button {
+        display: inline-block;
+        background-color: #25d366;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 10px;
         display: flex;
         align-items: center;
         gap: 5px;
+        width: fit-content;
     }
 
-    .email-icon {
+    .whatsapp-icon {
         font-size: 18px;
-        color: #007bff;
     }
 
     /* No Appointments Message */
@@ -103,13 +111,19 @@
             <div class="appointment-card">
                 <h3>{{ task.service_request.service.name }}</h3>
                 <p><strong>Customer:</strong> {{ task.service_request.name }}</p>
-                <p class="email-container">
-                    <strong>Email:</strong> 
-                    <span class="email-icon">📧</span> {{ task.service_request.email }}
-                </p>
+                <p><strong>Email:</strong> 📧 {{ task.service_request.email }}</p>
                 <p><strong>Contact:</strong> {{ task.service_request.contact_number }}</p>
                 <p><strong>Location:</strong> {{ task.service_request.location }}, {{ task.service_request.city }}, {{ task.service_request.state }}</p>
                 <p><strong>Vehicle Reg.:</strong> {{ task.service_request.vehicle_reg_number }}</p>
+
+                <!-- WhatsApp Contact Button -->
+                {% if task.service_request.contact_number %}
+                <a class="whatsapp-button" 
+                   href="https://wa.me/{{ task.service_request.contact_number }}?text=Hello%20{{ task.service_request.name }},%20How%20can%20I%20help%20you%20sir?" 
+                   target="_blank">
+                    <span class="whatsapp-icon">📱</span> Contact via WhatsApp
+                </a>
+                {% endif %}
             </div>
             {% endfor %}
         </div>
@@ -119,7 +133,6 @@
 </div>
 
 {% endblock %}
-
 
 
 

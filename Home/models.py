@@ -275,3 +275,12 @@ class PaymentInfo(models.Model):
     def __str__(self):
         status = "Paid" if self.is_paid else "Pending"
         return f"{self.customer_name} - ₹{self.amount} - {status}"
+
+class CustPayment(models.Model):
+    service_request_name = models.CharField(max_length=255)  # Name of the service request
+    cust_name = models.CharField(max_length=255)  # Customer's name (renamed from customer_name)
+    amount_paid = models.DecimalField(max_digits=10, decimal_places=2)  # Amount paid
+    is_paid = models.BooleanField(default=False)  # Payment status
+    order_id = models.CharField(max_length=100, unique=True, null=True, blank=True)  # Razorpay Order ID
+    def __str__(self):
+        return f"{self.cust_name} - {self.service_request_name} - {'Paid' if self.is_paid else 'Not Paid'}"

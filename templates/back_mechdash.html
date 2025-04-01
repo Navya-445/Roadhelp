@@ -87,7 +87,7 @@
         <a href="{% url 'view_pastwork' %}"><i class="fas fa-tasks"></i> My past works</a>
         
         <a href="{% url 'mechaniclogout' %}"><i class="fas fa-edit"></i> Logout</a>
-        <a href="#"><i class="fas fa-file-alt"></i> Reports</a>
+        {% comment %} <a href="#"><i class="fas fa-file-alt"></i> Reports</a> {% endcomment %}
     </div>
 
     <div class="main-content">
@@ -114,12 +114,12 @@
                 <a href="{% url 'mechanic_work_details' %}" style="color:#007bff; text-decoration:none;">Update Details</a>
             </div>
 
-            <div class="dashboard-card">
+            {% comment %} <div class="dashboard-card">
                 <img src="https://cdn-icons-png.flaticon.com/512/711/711284.png" alt="Reports">
                 <h3>Reports</h3>
                 <p>Check your latest service reports and history.</p>
                 <a href="#" style="color:#007bff; text-decoration:none;">View Reports</a>
-            </div>
+            </div> {% endcomment %}
 
         </div>
     </div>
