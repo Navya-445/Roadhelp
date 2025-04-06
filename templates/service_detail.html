@@ -22,7 +22,7 @@
 
         <!-- Additional Image (if available) -->
         {% if service.additional_picture %}
-        <h3 style="color: #007bff; text-align: center; font-weight: bold;">Additional Picture</h3>
+        {% comment %} <h3 style="color: #007bff; text-align: center; font-weight: bold;">Additional Picture</h3> {% endcomment %}
         <div style="text-align: center; margin: 20px 0;">
             <img src="{{ service.additional_picture.url }}" alt="Additional Image" style="width: 100%; max-width: 250px; border-radius: 10px; transition: transform 0.3s ease-in-out;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
         </div>
@@ -30,7 +30,7 @@
 
         <p style="font-size: 16px; line-height: 1.6; text-align: justify; margin-bottom: 20px;">{{ service.long_description }}</p>
 
-        <h3 style="color: #007bff; font-weight: bold; text-align: center;">Points to Remember</h3>
+        {% comment %} <h3 style="color: #007bff; font-weight: bold; text-align: center;">Points to Remember</h3> {% endcomment %}
         <p style="font-size: 16px; line-height: 1.6; text-align: justify; margin-bottom: 20px;">{{ service.points_to_remember }}</p>
 
         <!-- Display Messages -->
@@ -48,7 +48,7 @@
             <div style="margin-bottom: 10px;">{{ form.as_p }}</div>
             <button type="submit" style="background-color: #007bff; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s;" 
                 onmouseover="this.style.backgroundColor='#0056b3'" onmouseout="this.style.backgroundColor='#007bff'">
-                Submit Request
+                 Request Callback
             </button>
         </form>
         
