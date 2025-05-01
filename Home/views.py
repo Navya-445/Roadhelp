@@ -422,14 +422,59 @@ def assign_task(request):
         'assigned_tasks': assigned_tasks  # ✅ Pass assigned tasks to template
     })
 
+# @login_required
+# def my_appointments(request):
+#     mechanic_profile = get_object_or_404(MechanicProfile, user=request.user)
+#     assigned_tasks = TaskAssignment.objects.filter(mechanic=mechanic_profile)
+
+#     return render(request, 'my_appointments.html', {
+#         'assigned_tasks': assigned_tasks
+#     })
+from django.contrib import messages
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.db.models.fields.files import ImageFieldFile
+from .models import MechanicProfile, TaskAssignment
+
 @login_required
 def my_appointments(request):
-    mechanic_profile = get_object_or_404(MechanicProfile, user=request.user)
-    assigned_tasks = TaskAssignment.objects.filter(mechanic=mechanic_profile)
+    mechanic_profile = MechanicProfile.objects.filter(user=request.user).first()
 
+    if not mechanic_profile:
+        messages.warning(request, "Please complete your profile first.")
+        return render(request, 'my_appointments.html', {
+            'profile_incomplete': True,
+            'complete_profile_url': 'complete_profile'  # name of your URL pattern
+        })
+
+    skip_fields = ['id', 'user', 'alternate_contact']
+
+    for field in MechanicProfile._meta.fields:
+        if field.name in skip_fields:
+            continue
+
+        value = getattr(mechanic_profile, field.name)
+
+        if isinstance(value, ImageFieldFile) and not value:
+            messages.warning(request, "Please complete your profile first.")
+            return render(request, 'my_appointments.html', {
+                'profile_incomplete': True,
+                'complete_profile_url': 'complete_profile'
+            })
+
+        elif value in [None, '']:
+            messages.warning(request, "Please complete your profile first.")
+            return render(request, 'my_appointments.html', {
+                'profile_incomplete': True,
+                'complete_profile_url': 'complete_profile'
+            })
+
+    # Profile is complete
+    assigned_tasks = TaskAssignment.objects.filter(mechanic=mechanic_profile)
     return render(request, 'my_appointments.html', {
         'assigned_tasks': assigned_tasks
     })
+
 
 def view_task_details(request):
     tasks = TaskAssignment.objects.all()  # Fetch all assigned tasks

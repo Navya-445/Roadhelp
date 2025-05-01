@@ -1,5 +1,163 @@
 {% extends "base_mech.html" %}
 {% block content %}
+ 
+ <style>
+     /* (Same styling as you had — no changes needed here) */
+     body {
+         font-family: Arial, sans-serif;
+         margin: 0;
+         padding: 0;
+         background: #f4f4f4;
+     }
+ 
+     .container {
+         width: 90%;
+         max-width: 800px;
+         margin: 50px auto;
+         padding: 20px;
+         background: #fff;
+         border-radius: 10px;
+         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+         text-align: center;
+     }
+ 
+     .header {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         gap: 10px;
+         font-size: 22px;
+         font-weight: bold;
+         color: #333;
+     }
+ 
+     .header-icon {
+         font-size: 28px;
+         color: #007bff;
+     }
+ 
+     .appointments-container {
+         display: flex;
+         flex-direction: column;
+         gap: 15px;
+         margin-top: 20px;
+     }
+ 
+     .appointment-card {
+         background: #f9f9f9;
+         border-radius: 10px;
+         padding: 15px;
+         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+         transition: transform 0.2s ease-in-out;
+         border-left: 5px solid #007bff;
+         text-align: left;
+     }
+ 
+     .appointment-card:hover {
+         transform: scale(1.02);
+     }
+ 
+     .appointment-card h3 {
+         color: #007bff;
+         margin-bottom: 5px;
+         font-size: 18px;
+     }
+ 
+     .appointment-card p {
+         font-size: 14px;
+         color: #444;
+         margin: 4px 0;
+     }
+ 
+     .whatsapp-button {
+         display: inline-block;
+         background-color: #25d366;
+         color: white;
+         padding: 8px 15px;
+         border-radius: 5px;
+         text-decoration: none;
+         font-size: 14px;
+         font-weight: bold;
+         margin-top: 10px;
+         display: flex;
+         align-items: center;
+         gap: 5px;
+         width: fit-content;
+     }
+ 
+     .whatsapp-icon {
+         font-size: 18px;
+     }
+ 
+     .no-appointments {
+         color: #ff0000;
+         font-size: 18px;
+         margin-top: 20px;
+     }
+ 
+     .profile-warning {
+         color: #d9534f;
+         font-size: 18px;
+         margin-top: 30px;
+     }
+ 
+     .complete-profile-button {
+         margin-top: 15px;
+         background-color: #007bff;
+         color: white;
+         padding: 10px 20px;
+         text-decoration: none;
+         border-radius: 5px;
+         display: inline-block;
+     }
+ 
+     .complete-profile-button:hover {
+         background-color: #0056b3;
+     }
+ </style>
+ 
+ <div class="container">
+     <div class="header">
+         <span class="header-icon">🛠️</span> My Appointments
+     </div>
+ 
+     {% if profile_incomplete %}
+         <p class="profile-warning">⚠️ Please complete your profile before accessing appointments.</p>
+         <a href="{% url complete_profile_url %}" class="complete-profile-button">Complete Your Profile</a>
+     {% elif assigned_tasks %}
+         <div class="appointments-container">
+             {% for task in assigned_tasks %}
+             <div class="appointment-card">
+                 <h3>{{ task.service_request.service.name }}</h3>
+                 <p><strong>Customer:</strong> {{ task.service_request.name }}</p>
+                 <p><strong>Email:</strong> 📧 {{ task.service_request.email }}</p>
+                 <p><strong>Contact:</strong> {{ task.service_request.contact_number }}</p>
+                 <p><strong>Location:</strong> {{ task.service_request.location }}, {{ task.service_request.city }}, {{ task.service_request.state }}</p>
+                 <p><strong>Vehicle Reg.:</strong> {{ task.service_request.vehicle_reg_number }}</p>
+ 
+                 {% if task.service_request.contact_number %}
+                 <a class="whatsapp-button" 
+                    href="https://wa.me/{{ task.service_request.contact_number }}?text=Hello%20{{ task.service_request.name }},%20How%20can%20I%20help%20you%20sir?" 
+                    target="_blank">
+                     <span class="whatsapp-icon">📱</span> Contact via WhatsApp
+                 </a>
+                 {% endif %}
+             </div>
+             {% endfor %}
+         </div>
+     {% else %}
+         <p class="no-appointments">No appointments assigned.</p>
+     {% endif %}
+ </div>
+ 
+ {% endblock %}
+ 
+
+
+
+
+{% comment %} {% extends "base_mech.html" %}
+{% block content %}
 
 <style>
     /* Page Styling */
@@ -133,8 +291,7 @@
 </div>
 
 {% endblock %}
-
-
+ {% endcomment %}
 
 
 
